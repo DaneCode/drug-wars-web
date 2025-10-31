@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Drug Wars - Classic economic simulation game recreated for the web. Buy and sell items across different locations while managing risks and building your empire.">
+    <meta name="keywords" content="drug wars, game, simulation, trading, economic, retro, calculator game">
+    <meta name="author" content="Drug Wars Game">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Performance optimizations -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="preload" href="./styles.css" as="style">
+    <link rel="preload" href="./game.js" as="script">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    
+    <!-- Resource hints for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    
+    <!-- Favicon for better branding -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSIjMWExYTFhIi8+Cjx0ZXh0IHg9IjE2IiB5PSIyMCIgZm9udC1mYW1pbHk9IkNvdXJpZXIgTmV3LCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiMwMGZmMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkRXPC90ZXh0Pgo8L3N2Zz4=">
+    
+    <!-- PWA and mobile optimizations -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Drug Wars">
+    
+    <!-- Open Graph meta tags for social sharing -->
+    <meta property="og:title" content="Drug Wars - Classic Economic Simulation Game">
+    <meta property="og:description" content="Recreate the classic TI-83 calculator game in your browser. Trade items, manage risks, and build your empire.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiBmaWxsPSIjMWExYTFhIi8+Cjx0ZXh0IHg9IjI1NiIgeT0iMjgwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSI2NCIgZmlsbD0iIzAwZmYwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RFc8L3RleHQ+Cjx0ZXh0IHg9IjI1NiIgeT0iMzIwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIzMiIgZmlsbD0iIzAwZmYwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RHJ1ZyBXYXJzPC90ZXh0Pgo8L3N2Zz4=">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Drug Wars - Classic Economic Simulation Game">
+    <meta name="twitter:description" content="Recreate the classic TI-83 calculator game in your browser. Trade items, manage risks, and build your empire.">
+    <meta name="twitter:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiBmaWxsPSIjMWExYTFhIi8+Cjx0ZXh0IHg9IjI1NiIgeT0iMjgwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSI2NCIgZmlsbD0iIzAwZmYwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RFc8L3RleHQ+Cjx0ZXh0IHg9IjI1NiIgeT0iMzIwIiBmb250LWZhbWlseT0iQ291cmllciBOZXcsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIzMiIgZmlsbD0iIzAwZmYwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RHJ1ZyBXYXJzPC90ZXh0Pgo8L3N2Zz4=">
+    
+    <title>Drug Wars - Classic Economic Simulation Game</title>
+    <link rel="stylesheet" href="./styles.css">
+    
+    <!-- Additional performance optimizations -->
+    <link rel="prefetch" href="./game.js">
+    
+    <!-- Additional meta tags for better indexing -->
+    <meta name="application-name" content="Drug Wars">
+    <meta name="msapplication-TileColor" content="#1a1a1a">
+</head>
+<body>
+    <a href="#main-panel" class="skip-link">Skip to main content</a>
+    <div id="app" role="application" aria-label="Drug Wars Game">
+        <header id="game-header" role="banner">
+            <div class="header-stats" role="status" aria-live="polite">
+                <span id="cash-display" aria-label="Current cash amount">Cash: $0</span>
+                <span id="day-display" aria-label="Current day and total days">Day: 1</span>
+                <span id="location-display" aria-label="Current location">Location: Bronx</span>
+                <span id="vehicle-display" aria-label="Current vehicle">Vehicle: On Foot</span>
+            </div>
+        </header>
+
+        <main id="game-main" role="main">
+            <div id="main-panel" role="region" aria-label="Game content area">
+                <div class="text-center" id="loading-screen">
+                    <h1>Drug Wars</h1>
+                    <p>Loading game...</p>
+                    <div style="
+                        width: 40px;
+                        height: 40px;
+                        border: 4px solid #333;
+                        border-top: 4px solid #00ff00;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                        margin: 2rem auto;
+                    "></div>
+                </div>
+            </div>
+            
+            <aside id="sidebar" role="complementary" aria-label="Player inventory">
+                <div id="inventory-panel">
+                    <h3>Inventory</h3>
+                    <div id="inventory-list" role="list" aria-label="Items in inventory"></div>
+                    <div id="inventory-capacity" role="status" aria-live="polite" aria-label="Inventory capacity">Capacity: 0/100</div>
+                </div>
+            </aside>
+        </main>
+
+        <footer id="game-footer" role="contentinfo">
+            <nav id="action-buttons" role="navigation" aria-label="Game actions">
+                <!-- Action buttons will be rendered here -->
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        // Global variables for game management
+        let gameInstance = null;
+        let gameReady = false;
+        
+        // Safe wrapper functions that don't rely on window.game
+        function safeStartNewGame(difficulty) {
+            console.log('safeStartNewGame called with:', difficulty);
+            if (gameReady && gameInstance) {
+                try {
+                    console.log('Before startNewGame - cash:', gameInstance.gameState.player.cash);
+                    console.log('Before startNewGame - difficulty:', gameInstance.gameState.player.difficulty);
+                    
+                    gameInstance.startNewGame(difficulty);
+                    
+                    console.log('After startNewGame - cash:', gameInstance.gameState.player.cash);
+                    console.log('After startNewGame - difficulty:', gameInstance.gameState.player.difficulty);
+                    console.log('Game started successfully with difficulty:', difficulty);
+                } catch (error) {
+                    console.error('Error starting game:', error);
+                    alert('Error starting game: ' + error.message);
+                }
+            } else {
+                console.warn('Game not ready yet');
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        function safeBuyInterface(itemName, price, quantity) {
+            console.log('safeBuyInterface called with:', itemName, price, quantity);
+            if (gameReady && gameInstance && gameInstance.uiManager) {
+                try {
+                    gameInstance.uiManager.showBuyInterface(itemName, price, quantity);
+                } catch (error) {
+                    console.error('Error showing buy interface:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                console.warn('Game not ready for buy interface');
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        function safeContinueFromStory() {
+            console.log('safeContinueFromStory called');
+            if (gameReady && gameInstance && gameInstance.uiManager) {
+                try {
+                    // Check if market exists for current location
+                    const currentLocation = gameInstance.gameState.player.currentLocation;
+                    console.log('Current location:', currentLocation);
+                    console.log('Cash before market check:', gameInstance.gameState.player.cash);
+                    
+                    if (!gameInstance.gameState.market || !gameInstance.gameState.market[currentLocation]) {
+                        console.log('Market missing for', currentLocation, 'regenerating...');
+                        gameInstance.generateMarketForLocation(currentLocation);
+                        console.log('Cash after market generation:', gameInstance.gameState.player.cash);
+                    }
+                    
+                    // Check market after potential regeneration
+                    const market = gameInstance.getCurrentMarket();
+                    const availableItems = gameInstance.getAvailableItems();
+                    console.log('Market check before showing main game:', {
+                        market: market,
+                        availableItems: availableItems,
+                        marketKeys: market ? Object.keys(market) : 'no market'
+                    });
+                    
+                    console.log('Cash before showMainGame:', gameInstance.gameState.player.cash);
+                    gameInstance.uiManager.showMainGame(gameInstance.getGameState());
+                    console.log('Cash after showMainGame:', gameInstance.gameState.player.cash);
+                } catch (error) {
+                    console.error('Error continuing from story:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                console.warn('Game not ready for story continue');
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        function safeShowMainGame() {
+            console.log('safeShowMainGame called');
+            if (gameReady && gameInstance && gameInstance.uiManager) {
+                try {
+                    gameInstance.uiManager.showMainGame(gameInstance.getGameState());
+                } catch (error) {
+                    console.error('Error showing main game:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                console.warn('Game not ready for main game');
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        // Add more safe wrapper functions
+        function safeBuyItem(itemName, quantity) {
+            if (gameReady && gameInstance) {
+                try {
+                    return gameInstance.buyItem(itemName, quantity);
+                } catch (error) {
+                    console.error('Error buying item:', error);
+                    return { success: false, message: error.message };
+                }
+            }
+            return { success: false, message: 'Game not ready' };
+        }
+        
+        function safeSellInterface(itemName, price, quantity) {
+            if (gameReady && gameInstance && gameInstance.uiManager) {
+                try {
+                    gameInstance.uiManager.showSellInterface(itemName, price, quantity);
+                } catch (error) {
+                    console.error('Error showing sell interface:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        function safeTravelToLocation(location) {
+            if (gameReady && gameInstance) {
+                try {
+                    return gameInstance.travelToLocation(location);
+                } catch (error) {
+                    console.error('Error traveling:', error);
+                    return { success: false, message: error.message };
+                }
+            }
+            return { success: false, message: 'Game not ready' };
+        }
+        
+        function safeShowTravelInterface() {
+            if (gameReady && gameInstance && gameInstance.uiManager) {
+                try {
+                    gameInstance.uiManager.showTravelInterface();
+                } catch (error) {
+                    console.error('Error showing travel interface:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        function safeTravelToLocationFromInterface(locationName) {
+            console.log('safeTravelToLocationFromInterface called with:', locationName);
+            if (gameReady && gameInstance && gameInstance.uiManager) {
+                try {
+                    gameInstance.uiManager.travelToLocationFromInterface(locationName);
+                } catch (error) {
+                    console.error('Error traveling from interface:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        function safeExecuteBuy(itemName) {
+            console.log('safeExecuteBuy called with:', itemName);
+            if (gameReady && gameInstance) {
+                try {
+                    // This method exists in the global game object, let's call it directly on the instance
+                    const quantityInput = document.getElementById('buy-quantity');
+                    const quantity = parseInt(quantityInput?.value) || 1;
+                    
+                    const result = gameInstance.buyItem(itemName, quantity);
+                    if (result.success) {
+                        // Refresh the main game display
+                        gameInstance.uiManager.showMainGame(gameInstance.getGameState());
+                    } else {
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    console.error('Error executing buy:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        function safeExecuteSell(itemName) {
+            console.log('safeExecuteSell called with:', itemName);
+            if (gameReady && gameInstance) {
+                try {
+                    const quantityInput = document.getElementById('sell-quantity');
+                    const quantity = parseInt(quantityInput?.value) || 1;
+                    
+                    const result = gameInstance.sellItem(itemName, quantity);
+                    if (result.success) {
+                        // Refresh the main game display
+                        gameInstance.uiManager.showMainGame(gameInstance.getGameState());
+                    } else {
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    console.error('Error executing sell:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        // Add more safe wrapper functions for the missing methods
+        function safeShowVehicleShop() {
+            console.log('safeShowVehicleShop called');
+            if (gameReady && gameInstance && gameInstance.uiManager) {
+                try {
+                    // Ensure we have the latest game state
+                    console.log('Current cash before showing vehicle shop:', gameInstance.gameState.player.cash);
+                    
+                    // Force a display update to ensure UI is in sync
+                    gameInstance.updateDisplay();
+                    
+                    // Now show the vehicle shop
+                    gameInstance.uiManager.showVehicleShop();
+                } catch (error) {
+                    console.error('Error showing vehicle shop:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        function safeTriggerRandomEvent() {
+            console.log('safeTriggerRandomEvent called');
+            if (gameReady && gameInstance) {
+                try {
+                    const event = gameInstance.eventSystem.triggerRandomEvent();
+                    if (event && gameInstance.uiManager) {
+                        gameInstance.uiManager.showEventInterface(event);
+                    } else {
+                        alert('No random event occurred');
+                    }
+                } catch (error) {
+                    console.error('Error triggering random event:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        function safeSaveGame() {
+            console.log('safeSaveGame called');
+            if (gameReady && gameInstance) {
+                try {
+                    gameInstance.saveGame();
+                    alert('Game saved successfully!');
+                } catch (error) {
+                    console.error('Error saving game:', error);
+                    alert('Error saving game: ' + error.message);
+                }
+            } else {
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        function safeShowStartScreen() {
+            console.log('safeShowStartScreen called');
+            if (gameReady && gameInstance) {
+                try {
+                    // Only reset to default state if no game is in progress
+                    if (!gameInstance.gameState.gameStarted) {
+                        gameInstance.gameState = gameInstance.getDefaultGameState();
+                    }
+                    // Use the UI manager to show the start screen properly
+                    if (gameInstance.uiManager) {
+                        gameInstance.uiManager.showStartScreen();
+                    } else {
+                        gameInstance.updateDisplay();
+                    }
+                } catch (error) {
+                    console.error('Error showing start screen:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        function safePurchaseVehicle(vehicleName) {
+            console.log('safePurchaseVehicle called with:', vehicleName);
+            if (gameReady && gameInstance) {
+                try {
+                    const result = gameInstance.purchaseVehicle(vehicleName);
+                    if (result.success) {
+                        alert(result.message);
+                        // Refresh the vehicle shop display
+                        gameInstance.uiManager.showVehicleShop();
+                    } else {
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    console.error('Error purchasing vehicle:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                alert('Game is still loading, please wait...');
+            }
+        }
+        
+        // Create a comprehensive safe game interface
+        window.safeGame = {
+            startNewGame: safeStartNewGame,
+            showBuyInterface: safeBuyInterface,
+            showSellInterface: safeSellInterface,
+            continueFromStory: safeContinueFromStory,
+            showMainGame: safeShowMainGame,
+            buyItem: safeBuyItem,
+            travelToLocation: safeTravelToLocation,
+            showTravelInterface: safeShowTravelInterface,
+            travelToLocationFromInterface: safeTravelToLocationFromInterface,
+            executeBuy: safeExecuteBuy,
+            executeSell: safeExecuteSell,
+            showVehicleShop: safeShowVehicleShop,
+            triggerRandomEvent: safeTriggerRandomEvent,
+            saveGame: safeSaveGame,
+            showStartScreen: safeShowStartScreen,
+            purchaseVehicle: safePurchaseVehicle,
+            purchaseVehicleFromShop: (vehicleName) => {
+                if (gameReady && gameInstance && gameInstance.uiManager) {
+                    return gameInstance.uiManager.purchaseVehicleFromShop(vehicleName);
+                }
+                console.warn('Game not ready for purchaseVehicleFromShop');
+                return null;
+            },
+            loadSavedGame: () => {
+                console.log('loadSavedGame called');
+                if (gameReady && gameInstance) {
+                    try {
+                        const savedState = gameInstance.saveSystem.loadGame();
+                        if (savedState) {
+                            gameInstance.gameState = savedState;
+                            gameInstance.updateDisplay();
+                            console.log('Saved game loaded successfully');
+                        } else {
+                            alert('No saved game found');
+                        }
+                    } catch (error) {
+                        console.error('Error loading saved game:', error);
+                        alert('Error loading saved game: ' + error.message);
+                    }
+                } else {
+                    alert('Game is still loading, please wait...');
+                }
+            },
+            continueAfterTravelEvent: () => {
+                console.log('continueAfterTravelEvent called');
+                if (gameReady && gameInstance && gameInstance.uiManager) {
+                    try {
+                        gameInstance.uiManager.continueAfterTravelEvent();
+                    } catch (error) {
+                        console.error('Error continuing after travel event:', error);
+                        // Fallback to showing main game
+                        gameInstance.uiManager.showMainGame(gameInstance.getGameState());
+                    }
+                } else {
+                    console.warn('Game not ready for continueAfterTravelEvent');
+                }
+            },
+            selectVehicle: (vehicleName) => {
+                console.log('selectVehicle called with:', vehicleName);
+                if (gameReady && gameInstance) {
+                    try {
+                        const result = gameInstance.selectVehicle(vehicleName);
+                        if (result.success && gameInstance.uiManager) {
+                            gameInstance.uiManager.showVehicleShop(); // Refresh the vehicle shop
+                        } else if (!result.success) {
+                            alert(result.message);
+                        }
+                        return result;
+                    } catch (error) {
+                        console.error('Error selecting vehicle:', error);
+                        alert('Error selecting vehicle: ' + error.message);
+                    }
+                } else {
+                    console.warn('Game not ready for selectVehicle');
+                }
+                return null;
+            },
+            debug: () => {
+                console.log('Game debug info:', {
+                    gameReady: gameReady,
+                    gameInstance: !!gameInstance,
+                    uiManager: gameInstance ? !!gameInstance.uiManager : false,
+                    currentLocation: gameInstance ? gameInstance.gameState.player.currentLocation : 'unknown',
+                    market: gameInstance ? gameInstance.getCurrentMarket() : 'no market',
+                    availableItems: gameInstance ? gameInstance.getAvailableItems() : 'no items'
+                });
+                return gameInstance;
+            },
+            
+            // Add method to check market
+            checkMarket: () => {
+                if (gameInstance) {
+                    const market = gameInstance.getCurrentMarket();
+                    const availableItems = gameInstance.getAvailableItems();
+                    console.log('Market check:', {
+                        location: gameInstance.gameState.player.currentLocation,
+                        market: market,
+                        availableItems: availableItems,
+                        marketKeys: market ? Object.keys(market) : 'no market'
+                    });
+                    return { market, availableItems };
+                }
+                return null;
+            }
+        };
+        
+        // Check if game.js has loaded properly and has all needed methods
+        setTimeout(() => {
+            console.log('Checking window.game completeness...');
+            console.log('window.game exists:', !!window.game);
+            console.log('window.game.purchaseVehicleFromShop exists:', typeof window.game?.purchaseVehicleFromShop);
+            
+            // If game.js has loaded properly and has the complete safeGame, don't override
+            if (window.game && typeof window.game.purchaseVehicleFromShop === 'function') {
+                console.log('game.js safeGame is complete, using it');
+            } else {
+                console.log('game.js safeGame incomplete, using local fallback');
+                // Only override if the game.js version is incomplete
+                window.game = window.safeGame;
+            }
+            
+            console.log('Final window.game.purchaseVehicleFromShop:', typeof window.game?.purchaseVehicleFromShop);
+        }, 1000);
+        
+        // Intercept all button clicks and redirect to safe functions
+        document.addEventListener('click', (event) => {
+            if (event.target.tagName === 'BUTTON') {
+                const onclick = event.target.getAttribute('onclick');
+                if (onclick) {
+                    console.log('Button clicked with onclick:', onclick);
+                    
+                    // Prevent the original onclick from executing
+                    event.preventDefault();
+                    event.stopPropagation();
+                    
+                    // Parse and redirect to safe functions
+                    if (onclick.includes('game.continueFromStory()')) {
+                        console.log('Redirecting continueFromStory to safe function');
+                        safeContinueFromStory();
+                        return false;
+                    }
+                    
+                    if (onclick.includes('game.startNewGame(')) {
+                        const match = onclick.match(/game\.startNewGame\('([^']+)'\)/);
+                        if (match) {
+                            console.log('Redirecting startNewGame to safe function');
+                            safeStartNewGame(match[1]);
+                            return false;
+                        }
+                    }
+                    
+                    if (onclick.includes('game.showBuyInterface(')) {
+                        const match = onclick.match(/game\.showBuyInterface\('([^']+)',\s*([^,]+),\s*([^)]+)\)/);
+                        if (match) {
+                            console.log('Redirecting showBuyInterface to safe function');
+                            safeBuyInterface(match[1], parseFloat(match[2]), parseInt(match[3]));
+                            return false;
+                        }
+                    }
+                    
+                    if (onclick.includes('game.showSellInterface(')) {
+                        const match = onclick.match(/game\.showSellInterface\('([^']+)',\s*([^,]+),\s*([^)]+)\)/);
+                        if (match) {
+                            console.log('Redirecting showSellInterface to safe function');
+                            safeSellInterface(match[1], parseFloat(match[2]), parseInt(match[3]));
+                            return false;
+                        }
+                    }
+                    
+                    if (onclick.includes('game.showMainGame()')) {
+                        console.log('Redirecting showMainGame to safe function');
+                        safeShowMainGame();
+                        return false;
+                    }
+                    
+                    if (onclick.includes('game.showTravelInterface()')) {
+                        console.log('Redirecting showTravelInterface to safe function');
+                        safeShowTravelInterface();
+                        return false;
+                    }
+                    
+                    if (onclick.includes('game.travelToLocationFromInterface(')) {
+                        const match = onclick.match(/game\.travelToLocationFromInterface\('([^']+)'\)/);
+                        if (match) {
+                            console.log('Redirecting travelToLocationFromInterface to safe function');
+                            safeTravelToLocationFromInterface(match[1]);
+                            return false;
+                        }
+                    }
+                    
+                    if (onclick.includes('game.executeBuy(')) {
+                        const match = onclick.match(/game\.executeBuy\('([^']+)'\)/);
+                        if (match) {
+                            console.log('Redirecting executeBuy to safe function');
+                            safeExecuteBuy(match[1]);
+                            return false;
+                        }
+                    }
+                    
+                    if (onclick.includes('game.executeSell(')) {
+                        const match = onclick.match(/game\.executeSell\('([^']+)'\)/);
+                        if (match) {
+                            console.log('Redirecting executeSell to safe function');
+                            safeExecuteSell(match[1]);
+                            return false;
+                        }
+                    }
+                    
+                    if (onclick.includes('game.purchaseVehicle(')) {
+                        const match = onclick.match(/game\.purchaseVehicle\('([^']+)'\)/);
+                        if (match) {
+                            console.log('Redirecting purchaseVehicle to safe function');
+                            safePurchaseVehicle(match[1]);
+                            return false;
+                        }
+                    }
+                    
+                    // If we get here, it's an unhandled onclick - try to execute it safely
+                    console.warn('Unhandled onclick:', onclick);
+                    try {
+                        // Replace 'game.' with 'window.safeGame.' in the onclick string
+                        const safeOnclick = onclick.replace(/game\./g, 'window.safeGame.');
+                        console.log('Trying safe version:', safeOnclick);
+                        eval(safeOnclick);
+                    } catch (error) {
+                        console.error('Failed to execute safe onclick:', error);
+                        alert('Button function not available: ' + onclick);
+                    }
+                }
+            }
+        }, true); // Use capture phase to intercept before other handlers
+        
+        // Initialize game when everything is ready
+        function initializeGame() {
+            try {
+                console.log('Initializing game...');
+                
+                // Wait for GameEngine to be available
+                if (typeof GameEngine === 'undefined') {
+                    console.log('GameEngine not yet available, retrying...');
+                    setTimeout(initializeGame, 100);
+                    return;
+                }
+                
+                // Use existing game instance if available, otherwise create new one
+                if (window.gameInstance) {
+                    console.log('Using existing game instance from window.gameInstance');
+                    gameInstance = window.gameInstance;
+                } else {
+                    console.log('Creating new game instance');
+                    gameInstance = new GameEngine();
+                }
+                gameReady = true;
+                
+                console.log('Game initialized successfully!');
+                
+                // Hide loading screen
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.style.display = 'none';
+                }
+                
+                // Show start screen instead of updating display immediately
+                // This prevents showing game UI before a game is actually started
+                if (gameInstance.uiManager && gameInstance.uiManager.showStartScreen) {
+                    gameInstance.uiManager.showStartScreen();
+                } else if (gameInstance.updateDisplay) {
+                    gameInstance.updateDisplay();
+                }
+                
+            } catch (error) {
+                console.error('Failed to initialize game:', error);
+                
+                const mainPanel = document.getElementById('main-panel');
+                if (mainPanel) {
+                    mainPanel.innerHTML = `
+                        <div class="text-center">
+                            <h2 style="color: #ff4444;">Game Failed to Load</h2>
+                            <p>Error: ${error.message}</p>
+                            <button onclick="location.reload()" style="
+                                background-color: #333;
+                                color: #00ff00;
+                                border: 2px solid #00ff00;
+                                padding: 1rem 2rem;
+                                border-radius: 4px;
+                                cursor: pointer;
+                                font-family: inherit;
+                                margin-top: 1rem;
+                            ">Reload Page</button>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        // Start initialization when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, checking for existing game...');
+            
+            // Wait for game.js to initialize first
+            setTimeout(() => {
+                if (window.gameInstance) {
+                    console.log('Using game instance from game.js');
+                    gameInstance = window.gameInstance;
+                    gameReady = true;
+                } else {
+                    console.log('No existing game found, initializing...');
+                    setTimeout(initializeGame, 100);
+                }
+            }, 1000); // Longer delay to let game.js initialize first
+        });
+        
+        // Global error handler
+        window.addEventListener('error', (event) => {
+            console.error('Global error:', event.error);
+        });
+    </script>
+    
+    <script src="./game.js"></script>
+</body>
+</html>

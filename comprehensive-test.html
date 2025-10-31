@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Wars - Comprehensive Test Suite</title>
+    <link rel="stylesheet" href="./styles.css">
+    <style>
+        .test-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .test-button {
+            margin: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: #333;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #00ff00;
+            color: #000;
+        }
+        .test-output {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #00ff00; }
+        .error { color: #ff4444; }
+        .warning { color: #ffaa00; }
+        .info { color: #4488ff; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header id="game-header">
+            <div class="header-stats">
+                <span id="cash-display">Cash: $0</span>
+                <span id="day-display">Day: 1</span>
+                <span id="location-display">Location: Bronx</span>
+                <span id="vehicle-display">Vehicle: On Foot</span>
+            </div>
+        </header>
+
+        <main id="game-main">
+            <div id="main-panel">
+                <h1>Drug Wars - Comprehensive Test Suite</h1>
+                
+                <!-- Game Initialization Tests -->
+                <div class="test-section">
+                    <h2>Game Initialization Tests</h2>
+                    <button class="test-button" onclick="testGameInitialization()">Test Game Initialization</button>
+                    <button class="test-button" onclick="testGameStates()">Test Game States</button>
+                    <button class="test-button" onclick="testDifficultyLevels()">Test Difficulty Levels</button>
+                </div>
+
+                <!-- Market System Tests -->
+                <div class="test-section">
+                    <h2>Market System Tests</h2>
+                    <button class="test-button" onclick="testMarketGeneration()">Test Market Generation</button>
+                    <button class="test-button" onclick="testBuyingSelling()">Test Buying/Selling</button>
+                    <button class="test-button" onclick="testInventoryManagement()">Test Inventory Management</button>
+                </div>
+
+                <!-- Vehicle System Tests -->
+                <div class="test-section">
+                    <h2>Vehicle System Tests</h2>
+                    <button class="test-button" onclick="testVehicleShop()">Test Vehicle Shop</button>
+                    <button class="test-button" onclick="testVehiclePurchase()">Test Vehicle Purchase</button>
+                    <button class="test-button" onclick="debugVehicleAffordability()">Debug Vehicle Affordability</button>
+                </div>
+
+                <!-- Travel System Tests -->
+                <div class="test-section">
+                    <h2>Travel System Tests</h2>
+                    <button class="test-button" onclick="testTravelSystem()">Test Travel System</button>
+                    <button class="test-button" onclick="testLocationGeneration()">Test Location Generation</button>
+                </div>
+
+                <!-- Event System Tests -->
+                <div class="test-section">
+                    <h2>Event System Tests</h2>
+                    <button class="test-button" onclick="testEventSystem()">Test Event System</button>
+                    <button class="test-button" onclick="testRandomEvents()">Test Random Events</button>
+                </div>
+
+                <!-- Save/Load Tests -->
+                <div class="test-section">
+                    <h2>Save/Load System Tests</h2>
+                    <button class="test-button" onclick="testSaveLoad()">Test Save/Load</button>
+                    <button class="test-button" onclick="testGamePersistence()">Test Game Persistence</button>
+                </div>
+
+                <!-- UI Integration Tests -->
+                <div class="test-section">
+                    <h2>UI Integration Tests</h2>
+                    <button class="test-button" onclick="testUIIntegration()">Test UI Integration</button>
+                    <button class="test-button" onclick="testButtonFunctionality()">Test Button Functionality</button>
+                    <button class="test-button" onclick="testSafeGameWrapper()">Test SafeGame Wrapper</button>
+                </div>
+
+                <!-- Debug Tools -->
+                <div class="test-section">
+                    <h2>Debug Tools</h2>
+                    <button class="test-button" onclick="debugGameState()">Debug Game State</button>
+                    <button class="test-button" onclick="debugWindowGame()">Debug window.game</button>
+                    <button class="test-button" onclick="debugMarketData()">Debug Market Data</button>
+                    <button class="test-button" onclick="clearOutput()">Clear Output</button>
+                </div>
+
+                <div id="test-output" class="test-output">Test output will appear here...</div>
+            </div>
+            
+            <aside id="sidebar">
+                <div id="inventory-panel">
+                    <h3>Inventory</h3>
+                    <div id="inventory-list">Empty</div>
+                    <div id="inventory-capacity">Capacity: 0/100</div>
+                </div>
+            </aside>
+        </main>
+
+        <footer id="game-footer">
+            <nav id="action-buttons">
+                <button onclick="runAllTests()">Run All Tests</button>
+                <button onclick="startTestGame()">Start Test Game</button>
+                <button onclick="resetTestEnvironment()">Reset Test Environment</button>
+            </nav>
+        </footer>
+    </div>
+
+    <script src="game.js"></script>
+    <script>
+        let testGameInstance = null;
+        let testResults = [];
+        
+        function log(message, type = 'info') {
+            const output = document.getElementById('test-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type;
+            const prefix = type.toUpperCase();
+            
+            output.innerHTML += `<span class="${className}">[${timestamp}] ${prefix}: ${message}</span>\n`;
+            output.scrollTop = output.scrollHeight;
+            
+            console.log(`[${prefix}] ${message}`);
+        }
+        
+        function clearOutput() {
+            document.getElementById('test-output').innerHTML = '';
+            testResults = [];
+        }
+        
+        function addTestResult(testName, passed, message) {
+            testResults.push({ testName, passed, message });
+            log(`${testName}: ${passed ? 'PASS' : 'FAIL'} - ${message}`, passed ? 'success' : 'error');
+        }
+        
+        // Game Initialization Tests
+        function testGameInitialization() {
+            log('Testing game initialization...', 'info');
+            
+            try {
+                testGameInstance = new GameEngine();
+                addTestResult('GameEngine Creation', true, 'GameEngine instance created successfully');
+                
+                // Test default state
+                const defaultState = testGameInstance.getDefaultGameState();
+                addTestResult('Default State', 
+                    defaultState && defaultState.player && defaultState.player.cash === 0,
+                    'Default game state structure is correct');
+                
+                // Test game systems
+                addTestResult('Market System', !!testGameInstance.marketSystem, 'Market system initialized');
+                addTestResult('Event System', !!testGameInstance.eventSystem, 'Event system initialized');
+                addTestResult('UI Manager', !!testGameInstance.uiManager, 'UI manager initialized');
+                addTestResult('Save System', !!testGameInstance.saveSystem, 'Save system initialized');
+                
+            } catch (error) {
+                addTestResult('GameEngine Creation', false, error.message);
+            }
+        }
+        
+        function testGameStates() {
+            log('Testing game states...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Game States', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                // Test starting a new game
+                testGameInstance.startNewGame('easy');
+                const gameState = testGameInstance.gameState;
+                
+                addTestResult('Game Started', gameState.gameStarted, 'Game marked as started');
+                addTestResult('Starting Cash', gameState.player.cash === 5000, `Cash: ${gameState.player.cash}`);
+                addTestResult('Starting Location', gameState.player.currentLocation === 'Bronx', `Location: ${gameState.player.currentLocation}`);
+                addTestResult('Starting Vehicle', gameState.player.vehicle === 'On Foot', `Vehicle: ${gameState.player.vehicle}`);
+                addTestResult('Starting Inventory', gameState.player.inventoryCapacity === 100, `Capacity: ${gameState.player.inventoryCapacity}`);
+                
+            } catch (error) {
+                addTestResult('Game States', false, error.message);
+            }
+        }
+        
+        function testDifficultyLevels() {
+            log('Testing difficulty levels...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Difficulty Levels', false, 'No game instance available');
+                return;
+            }
+            
+            const difficulties = ['easy', 'medium', 'hard'];
+            const expectedCash = { easy: 5000, medium: 2000, hard: 1000 };
+            const expectedDays = { easy: 45, medium: 30, hard: 20 };
+            
+            difficulties.forEach(difficulty => {
+                try {
+                    testGameInstance.startNewGame(difficulty);
+                    const state = testGameInstance.gameState;
+                    
+                    addTestResult(`${difficulty} Cash`, 
+                        state.player.cash === expectedCash[difficulty],
+                        `Expected: ${expectedCash[difficulty]}, Got: ${state.player.cash}`);
+                    
+                    addTestResult(`${difficulty} Days`, 
+                        state.player.maxDays === expectedDays[difficulty],
+                        `Expected: ${expectedDays[difficulty]}, Got: ${state.player.maxDays}`);
+                        
+                } catch (error) {
+                    addTestResult(`${difficulty} Level`, false, error.message);
+                }
+            });
+        }
+        
+        // Market System Tests
+        function testMarketGeneration() {
+            log('Testing market generation...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Market Generation', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('medium');
+                
+                // Test market generation for each location
+                const locations = Object.keys(LOCATIONS);
+                locations.forEach(location => {
+                    testGameInstance.generateMarketForLocation(location);
+                    const market = testGameInstance.gameState.market[location];
+                    
+                    addTestResult(`Market ${location}`, !!market, `Market generated for ${location}`);
+                    
+                    if (market) {
+                        const itemCount = Object.keys(market).length;
+                        addTestResult(`Market ${location} Items`, itemCount > 0, `${itemCount} items in market`);
+                    }
+                });
+                
+            } catch (error) {
+                addTestResult('Market Generation', false, error.message);
+            }
+        }
+        
+        function testBuyingSelling() {
+            log('Testing buying and selling...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Buying/Selling', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('easy');
+                testGameInstance.generateMarketForLocation('Bronx');
+                
+                const market = testGameInstance.getCurrentMarket();
+                const availableItems = testGameInstance.getAvailableItems();
+                
+                if (availableItems.length > 0) {
+                    const testItem = availableItems[0];
+                    const initialCash = testGameInstance.gameState.player.cash;
+                    
+                    // Test buying
+                    const buyResult = testGameInstance.buyItem(testItem.name, 1);
+                    addTestResult('Buy Item', buyResult.success, buyResult.message);
+                    
+                    if (buyResult.success) {
+                        const newCash = testGameInstance.gameState.player.cash;
+                        const inventory = testGameInstance.gameState.player.inventory;
+                        
+                        addTestResult('Cash Deducted', newCash < initialCash, `Cash: ${initialCash} -> ${newCash}`);
+                        addTestResult('Item Added', inventory[testItem.name] === 1, `Inventory: ${inventory[testItem.name]}`);
+                        
+                        // Test selling
+                        const sellResult = testGameInstance.sellItem(testItem.name, 1);
+                        addTestResult('Sell Item', sellResult.success, sellResult.message);
+                    }
+                } else {
+                    addTestResult('Available Items', false, 'No items available for testing');
+                }
+                
+            } catch (error) {
+                addTestResult('Buying/Selling', false, error.message);
+            }
+        }
+        
+        function testInventoryManagement() {
+            log('Testing inventory management...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Inventory Management', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('easy');
+                
+                // Test inventory capacity
+                const initialCapacity = testGameInstance.gameState.player.inventoryCapacity;
+                addTestResult('Initial Capacity', initialCapacity === 100, `Capacity: ${initialCapacity}`);
+                
+                // Test inventory expansion
+                const expandResult = testGameInstance.expandInventory(50);
+                addTestResult('Expand Inventory', expandResult.success, expandResult.message);
+                
+                if (expandResult.success) {
+                    const newCapacity = testGameInstance.gameState.player.inventoryCapacity;
+                    addTestResult('Capacity Increased', newCapacity === 150, `New capacity: ${newCapacity}`);
+                }
+                
+                // Test inventory status
+                const status = testGameInstance.getInventoryStatus();
+                addTestResult('Inventory Status', !!status, `Status: ${status.status}`);
+                
+            } catch (error) {
+                addTestResult('Inventory Management', false, error.message);
+            }
+        }
+        
+        // Vehicle System Tests
+        function testVehicleShop() {
+            log('Testing vehicle shop...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Vehicle Shop', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('easy');
+                
+                const vehicles = testGameInstance.getAvailableVehicles();
+                addTestResult('Get Vehicles', vehicles.length > 0, `${vehicles.length} vehicles available`);
+                
+                vehicles.forEach(vehicle => {
+                    const expectedAffordable = testGameInstance.gameState.player.cash >= vehicle.cost;
+                    const expectedCanPurchase = expectedAffordable && vehicle.name !== testGameInstance.gameState.player.vehicle;
+                    
+                    addTestResult(`${vehicle.name} Affordable`, 
+                        vehicle.affordable === expectedAffordable,
+                        `Expected: ${expectedAffordable}, Got: ${vehicle.affordable}`);
+                    
+                    addTestResult(`${vehicle.name} Can Purchase`, 
+                        vehicle.canPurchase === expectedCanPurchase,
+                        `Expected: ${expectedCanPurchase}, Got: ${vehicle.canPurchase}`);
+                });
+                
+            } catch (error) {
+                addTestResult('Vehicle Shop', false, error.message);
+            }
+        }
+        
+        function testVehiclePurchase() {
+            log('Testing vehicle purchase...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Vehicle Purchase', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('easy');
+                
+                const initialCash = testGameInstance.gameState.player.cash;
+                const initialVehicle = testGameInstance.gameState.player.vehicle;
+                
+                // Try to purchase a skateboard
+                const purchaseResult = testGameInstance.purchaseVehicle('Skateboard');
+                addTestResult('Purchase Skateboard', purchaseResult.success, purchaseResult.message);
+                
+                if (purchaseResult.success) {
+                    const newCash = testGameInstance.gameState.player.cash;
+                    const newVehicle = testGameInstance.gameState.player.vehicle;
+                    
+                    addTestResult('Cash Deducted', newCash < initialCash, `Cash: ${initialCash} -> ${newCash}`);
+                    addTestResult('Vehicle Changed', newVehicle === 'Skateboard', `Vehicle: ${initialVehicle} -> ${newVehicle}`);
+                }
+                
+            } catch (error) {
+                addTestResult('Vehicle Purchase', false, error.message);
+            }
+        }
+        
+        function debugVehicleAffordability() {
+            log('Debugging vehicle affordability...', 'info');
+            
+            if (!testGameInstance) {
+                log('No game instance available', 'error');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('easy');
+                
+                const playerCash = testGameInstance.gameState.player.cash;
+                const currentVehicle = testGameInstance.gameState.player.vehicle;
+                const vehicles = testGameInstance.getAvailableVehicles();
+                
+                log(`Player Cash: $${playerCash}`, 'info');
+                log(`Current Vehicle: ${currentVehicle}`, 'info');
+                log('Vehicle Affordability Analysis:', 'info');
+                
+                vehicles.forEach(vehicle => {
+                    const cashCheck = playerCash >= vehicle.cost;
+                    const notCurrentCheck = vehicle.name !== currentVehicle;
+                    
+                    log(`${vehicle.name}:`, 'info');
+                    log(`  Cost: $${vehicle.cost}`, 'info');
+                    log(`  Cash >= Cost: ${playerCash} >= ${vehicle.cost} = ${cashCheck}`, 'info');
+                    log(`  Not Current: ${vehicle.name} !== ${currentVehicle} = ${notCurrentCheck}`, 'info');
+                    log(`  Affordable: ${vehicle.affordable}`, 'info');
+                    log(`  Can Purchase: ${vehicle.canPurchase}`, 'info');
+                    log(`  Expected Can Purchase: ${cashCheck && notCurrentCheck}`, 'info');
+                });
+                
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Travel System Tests
+        function testTravelSystem() {
+            log('Testing travel system...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Travel System', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('medium');
+                
+                const initialLocation = testGameInstance.gameState.player.currentLocation;
+                const initialDay = testGameInstance.gameState.player.day;
+                
+                // Test traveling to a different location
+                const travelResult = testGameInstance.travelToLocation('Manhattan');
+                addTestResult('Travel to Manhattan', travelResult.success, travelResult.message);
+                
+                if (travelResult.success) {
+                    const newLocation = testGameInstance.gameState.player.currentLocation;
+                    const newDay = testGameInstance.gameState.player.day;
+                    
+                    addTestResult('Location Changed', newLocation === 'Manhattan', `Location: ${initialLocation} -> ${newLocation}`);
+                    addTestResult('Day Advanced', newDay > initialDay, `Day: ${initialDay} -> ${newDay}`);
+                }
+                
+            } catch (error) {
+                addTestResult('Travel System', false, error.message);
+            }
+        }
+        
+        function testLocationGeneration() {
+            log('Testing location generation...', 'info');
+            
+            const locations = Object.keys(LOCATIONS);
+            addTestResult('Locations Defined', locations.length > 0, `${locations.length} locations available`);
+            
+            locations.forEach(location => {
+                const locationData = LOCATIONS[location];
+                addTestResult(`Location ${location}`, 
+                    locationData && typeof locationData.marketModifier === 'number',
+                    `Market modifier: ${locationData.marketModifier}`);
+            });
+        }
+        
+        // Event System Tests
+        function testEventSystem() {
+            log('Testing event system...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Event System', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('medium');
+                
+                const eventSystem = testGameInstance.eventSystem;
+                addTestResult('Event System Exists', !!eventSystem, 'Event system initialized');
+                
+                // Test event probability calculation
+                const baseProb = eventSystem.baseEventProbability;
+                addTestResult('Base Probability', typeof baseProb === 'number', `Base probability: ${baseProb}`);
+                
+                // Test event generation
+                let eventGenerated = false;
+                for (let i = 0; i < 100; i++) {
+                    const event = eventSystem.triggerRandomEvent();
+                    if (event) {
+                        eventGenerated = true;
+                        addTestResult('Event Generated', true, `Event: ${event.title}`);
+                        break;
+                    }
+                }
+                
+                if (!eventGenerated) {
+                    addTestResult('Event Generation', false, 'No events generated in 100 attempts');
+                }
+                
+            } catch (error) {
+                addTestResult('Event System', false, error.message);
+            }
+        }
+        
+        function testRandomEvents() {
+            log('Testing random events...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Random Events', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('medium');
+                
+                // Force trigger an event for testing
+                const event = testGameInstance.eventSystem.triggerRandomEvent();
+                
+                if (event) {
+                    addTestResult('Event Structure', 
+                        event.title && event.description && event.type,
+                        `Event: ${event.title}`);
+                } else {
+                    log('No random event triggered (this is normal)', 'warning');
+                }
+                
+            } catch (error) {
+                addTestResult('Random Events', false, error.message);
+            }
+        }
+        
+        // Save/Load Tests
+        function testSaveLoad() {
+            log('Testing save/load system...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Save/Load', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('hard');
+                
+                // Modify game state
+                testGameInstance.gameState.player.cash = 12345;
+                testGameInstance.gameState.player.day = 15;
+                
+                // Save game
+                testGameInstance.saveGame();
+                addTestResult('Save Game', true, 'Game saved successfully');
+                
+                // Create new instance and load
+                const newInstance = new GameEngine();
+                const savedState = newInstance.saveSystem.loadGame();
+                
+                addTestResult('Load Game', !!savedState, 'Saved state retrieved');
+                
+                if (savedState) {
+                    addTestResult('Cash Preserved', savedState.player.cash === 12345, `Cash: ${savedState.player.cash}`);
+                    addTestResult('Day Preserved', savedState.player.day === 15, `Day: ${savedState.player.day}`);
+                }
+                
+            } catch (error) {
+                addTestResult('Save/Load', false, error.message);
+            }
+        }
+        
+        function testGamePersistence() {
+            log('Testing game persistence...', 'info');
+            
+            try {
+                // Test localStorage availability
+                const testKey = 'drug_wars_test';
+                localStorage.setItem(testKey, 'test');
+                const retrieved = localStorage.getItem(testKey);
+                localStorage.removeItem(testKey);
+                
+                addTestResult('LocalStorage', retrieved === 'test', 'LocalStorage is functional');
+                
+            } catch (error) {
+                addTestResult('LocalStorage', false, error.message);
+            }
+        }
+        
+        // UI Integration Tests
+        function testUIIntegration() {
+            log('Testing UI integration...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('UI Integration', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('medium');
+                
+                // Test UI elements exist
+                const elements = ['game-header', 'main-panel', 'sidebar', 'action-buttons'];
+                elements.forEach(elementId => {
+                    const element = document.getElementById(elementId);
+                    addTestResult(`Element ${elementId}`, !!element, `Element ${elementId} exists`);
+                });
+                
+                // Test UI manager
+                const uiManager = testGameInstance.uiManager;
+                addTestResult('UI Manager', !!uiManager, 'UI Manager initialized');
+                
+                if (uiManager) {
+                    addTestResult('UI Elements', !!uiManager.elements, 'UI elements mapped');
+                }
+                
+            } catch (error) {
+                addTestResult('UI Integration', false, error.message);
+            }
+        }
+        
+        function testButtonFunctionality() {
+            log('Testing button functionality...', 'info');
+            
+            // Test that window.game exists and has expected methods
+            const expectedMethods = [
+                'startNewGame', 'showBuyInterface', 'showSellInterface', 
+                'showMainGame', 'showTravelInterface', 'showVehicleShop',
+                'purchaseVehicle', 'saveGame', 'loadSavedGame'
+            ];
+            
+            expectedMethods.forEach(method => {
+                const exists = window.game && typeof window.game[method] === 'function';
+                addTestResult(`Method ${method}`, exists, `window.game.${method} is ${typeof window.game?.[method]}`);
+            });
+        }
+        
+        function testSafeGameWrapper() {
+            log('Testing SafeGame wrapper...', 'info');
+            
+            addTestResult('window.game exists', !!window.game, 'window.game object exists');
+            addTestResult('window.safeGame exists', !!window.safeGame, 'window.safeGame object exists');
+            
+            if (window.game && window.safeGame) {
+                // Compare method availability
+                const gameMethods = Object.keys(window.game);
+                const safeGameMethods = Object.keys(window.safeGame);
+                
+                addTestResult('Method Count Comparison', 
+                    gameMethods.length > 0 && safeGameMethods.length > 0,
+                    `game: ${gameMethods.length}, safeGame: ${safeGameMethods.length}`);
+            }
+        }
+        
+        // Debug Tools
+        function debugGameState() {
+            log('Debugging game state...', 'info');
+            
+            if (!testGameInstance) {
+                log('No game instance available', 'error');
+                return;
+            }
+            
+            const state = testGameInstance.gameState;
+            log('Game State Debug:', 'info');
+            log(`  Game Started: ${state.gameStarted}`, 'info');
+            log(`  Game Ended: ${state.gameEnded}`, 'info');
+            log(`  Player Cash: $${state.player.cash}`, 'info');
+            log(`  Player Day: ${state.player.day}/${state.player.maxDays}`, 'info');
+            log(`  Player Location: ${state.player.currentLocation}`, 'info');
+            log(`  Player Vehicle: ${state.player.vehicle}`, 'info');
+            log(`  Inventory Capacity: ${state.player.inventoryCapacity}`, 'info');
+            log(`  Difficulty: ${state.player.difficulty}`, 'info');
+            
+            const inventoryItems = Object.keys(state.player.inventory).length;
+            log(`  Inventory Items: ${inventoryItems}`, 'info');
+            
+            if (state.market) {
+                const marketLocations = Object.keys(state.market).length;
+                log(`  Market Locations: ${marketLocations}`, 'info');
+            }
+        }
+        
+        function debugWindowGame() {
+            log('Debugging window.game...', 'info');
+            
+            log(`window.game exists: ${!!window.game}`, 'info');
+            log(`window.safeGame exists: ${!!window.safeGame}`, 'info');
+            log(`window.gameInstance exists: ${!!window.gameInstance}`, 'info');
+            
+            if (window.game) {
+                const methods = Object.keys(window.game);
+                log(`window.game methods (${methods.length}):`, 'info');
+                methods.forEach(method => {
+                    log(`  ${method}: ${typeof window.game[method]}`, 'info');
+                });
+            }
+        }
+        
+        function debugMarketData() {
+            log('Debugging market data...', 'info');
+            
+            if (!testGameInstance) {
+                log('No game instance available', 'error');
+                return;
+            }
+            
+            try {
+                const currentLocation = testGameInstance.gameState.player.currentLocation;
+                const market = testGameInstance.getCurrentMarket();
+                const availableItems = testGameInstance.getAvailableItems();
+                
+                log(`Current Location: ${currentLocation}`, 'info');
+                log(`Market Data:`, 'info');
+                
+                if (market) {
+                    Object.entries(market).forEach(([item, data]) => {
+                        log(`  ${item}: $${data.price} (${data.quantity} available)`, 'info');
+                    });
+                } else {
+                    log('  No market data available', 'warning');
+                }
+                
+                log(`Available Items: ${availableItems.length}`, 'info');
+                
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Utility Functions
+        function startTestGame() {
+            log('Starting test game...', 'info');
+            testGameInitialization();
+            
+            if (testGameInstance) {
+                testGameInstance.startNewGame('easy');
+                log('Test game started with easy difficulty', 'success');
+            }
+        }
+        
+        function resetTestEnvironment() {
+            log('Resetting test environment...', 'info');
+            testGameInstance = null;
+            testResults = [];
+            
+            // Clear localStorage
+            try {
+                localStorage.removeItem('drug_wars_save');
+                log('LocalStorage cleared', 'success');
+            } catch (error) {
+                log(`Error clearing localStorage: ${error.message}`, 'error');
+            }
+        }
+        
+        function runAllTests() {
+            log('Running comprehensive test suite...', 'info');
+            clearOutput();
+            
+            // Initialize
+            testGameInitialization();
+            
+            if (testGameInstance) {
+                // Core functionality tests
+                testGameStates();
+                testDifficultyLevels();
+                testMarketGeneration();
+                testBuyingSelling();
+                testInventoryManagement();
+                testVehicleShop();
+                testVehiclePurchase();
+                testTravelSystem();
+                testLocationGeneration();
+                testEventSystem();
+                testRandomEvents();
+                testSaveLoad();
+                testGamePersistence();
+                testUIIntegration();
+                testButtonFunctionality();
+                testSafeGameWrapper();
+                
+                // Summary
+                const totalTests = testResults.length;
+                const passedTests = testResults.filter(r => r.passed).length;
+                const failedTests = totalTests - passedTests;
+                
+                log(`\n=== TEST SUMMARY ===`, 'info');
+                log(`Total Tests: ${totalTests}`, 'info');
+                log(`Passed: ${passedTests}`, 'success');
+                log(`Failed: ${failedTests}`, failedTests > 0 ? 'error' : 'success');
+                log(`Success Rate: ${Math.round((passedTests / totalTests) * 100)}%`, 'info');
+                
+                if (failedTests > 0) {
+                    log(`\nFailed Tests:`, 'error');
+                    testResults.filter(r => !r.passed).forEach(test => {
+                        log(`  ${test.testName}: ${test.message}`, 'error');
+                    });
+                }
+            }
+        }
+        
+        // Auto-initialize when page loads
+        setTimeout(() => {
+            log('Comprehensive test suite loaded', 'success');
+            log('Click "Start Test Game" to initialize, then run individual tests or "Run All Tests"', 'info');
+        }, 1000);
+    </script>
+</body>
+</html>

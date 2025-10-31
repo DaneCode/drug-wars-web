@@ -1,0 +1,3123 @@
+/* Critical CSS - Above the fold styles */
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Performance optimization: Use contain for better rendering */
+#app {
+    contain: layout style paint;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background-color: #1a1a1a;
+    color: #00ff00;
+    line-height: 1.4;
+    min-height: 100vh;
+}
+
+/* Mobile-first responsive design */
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Header styles */
+#game-header {
+    background-color: #2a2a2a;
+    padding: 1rem;
+    border-bottom: 2px solid #00ff00;
+}
+
+.header-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.header-stats span {
+    background-color: #333;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #00ff00;
+    min-width: 120px;
+    text-align: center;
+}
+
+/* Main content area */
+#game-main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+}
+
+#main-panel {
+    background-color: #2a2a2a;
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    padding: 1.5rem;
+    flex: 1;
+    min-height: 300px;
+}
+
+#sidebar {
+    background-color: #2a2a2a;
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+#inventory-panel h3 {
+    color: #00ff00;
+    margin-bottom: 1rem;
+    text-align: center;
+    border-bottom: 1px solid #00ff00;
+    padding-bottom: 0.5rem;
+}
+
+#inventory-list {
+    margin-bottom: 1rem;
+    min-height: 100px;
+}
+
+#inventory-capacity {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #ffff00;
+    background-color: #333;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+/* Footer styles */
+#game-footer {
+    background-color: #2a2a2a;
+    padding: 1rem;
+    border-top: 2px solid #00ff00;
+}
+
+#action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+/* Button styles */
+button {
+    background-color: #333;
+    color: #00ff00;
+    border: 2px solid #00ff00;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    min-width: 120px;
+}
+
+button:hover {
+    background-color: #00ff00;
+    color: #1a1a1a;
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #666;
+    border-color: #666;
+    color: #999;
+}
+
+button:disabled:hover {
+    background-color: #666;
+    color: #999;
+    transform: none;
+}
+
+/* Responsive design for tablets and larger screens */
+@media (min-width: 768px) {
+    #app {
+        max-width: 1200px;
+    }
+    
+    #game-main {
+        flex-direction: row;
+    }
+    
+    #main-panel {
+        flex: 2;
+        margin-right: 1rem;
+    }
+    
+    #sidebar {
+        flex: 1;
+        margin-right: 0;
+    }
+    
+    .header-stats {
+        font-size: 1rem;
+    }
+    
+    .header-stats span {
+        min-width: 150px;
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 1024px) {
+    body {
+        font-size: 1.1rem;
+    }
+    
+    #game-header {
+        padding: 1.5rem;
+    }
+    
+    #game-main {
+        padding: 1.5rem;
+    }
+    
+    #main-panel {
+        padding: 2rem;
+    }
+}
+
+/* Utility classes */
+.text-center {
+    text-align: center;
+}
+
+.text-warning {
+    color: #ffff00;
+}
+
+.text-error {
+    color: #ff0000;
+}
+
+.text-success {
+    color: #00ff00;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Loading and transition effects */
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus styles for keyboard navigation */
+button:focus,
+input:focus,
+select:focus {
+    outline: 2px solid #00ff00;
+    outline-offset: 2px;
+}
+
+/* Difficulty selection styles */
+.game-intro {
+    margin: 1rem 0;
+    font-size: 1.1rem;
+    color: #cccccc;
+}
+
+.difficulty-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 2rem 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.difficulty-option {
+    width: 100%;
+}
+
+.difficulty-btn {
+    width: 100%;
+    padding: 1.5rem;
+    text-align: left;
+    background-color: #333;
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    color: #00ff00;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.difficulty-btn h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+.difficulty-details {
+    font-size: 0.9rem;
+    color: #cccccc;
+    text-align: center;
+}
+
+.difficulty-details p {
+    margin: 0.2rem 0;
+}
+
+.difficulty-btn:hover {
+    background-color: #00ff00;
+    color: #1a1a1a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 255, 0, 0.3);
+}
+
+.difficulty-btn:hover .difficulty-details {
+    color: #1a1a1a;
+}
+
+.difficulty-btn.easy:hover {
+    background-color: #00aa00;
+    border-color: #00aa00;
+}
+
+.difficulty-btn.medium:hover {
+    background-color: #ffaa00;
+    border-color: #ffaa00;
+}
+
+.difficulty-btn.hard:hover {
+    background-color: #ff4444;
+    border-color: #ff4444;
+}
+
+.continue-game {
+    margin: 2rem 0;
+}
+
+.continue-btn {
+    background-color: #444;
+    border-color: #ffff00;
+    color: #ffff00;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+.continue-btn:hover {
+    background-color: #ffff00;
+    color: #1a1a1a;
+}
+
+.game-info {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #333;
+    border-radius: 8px;
+    border: 1px solid #666;
+    font-size: 0.9rem;
+    color: #cccccc;
+}
+
+.game-info strong {
+    color: #00ff00;
+}
+
+/* Responsive difficulty selection */
+@media (min-width: 768px) {
+    .difficulty-selection {
+        flex-direction: row;
+        gap: 1.5rem;
+    }
+    
+    .difficulty-option {
+        flex: 1;
+    }
+    
+    .difficulty-btn {
+        min-height: 140px;
+    }
+}
+
+/* Enhanced inventory display styles */
+.inventory-empty {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 1rem;
+}
+
+.inventory-item {
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.inventory-item:hover {
+    background-color: #444;
+}
+
+.item-name {
+    font-weight: bold;
+    color: #00ff00;
+    margin-bottom: 0.25rem;
+}
+
+.item-quantity {
+    font-size: 0.9rem;
+    color: #cccccc;
+}
+
+.item-value {
+    font-size: 0.9rem;
+    color: #ffff00;
+    font-weight: bold;
+}
+
+/* Capacity display styles */
+.capacity-display {
+    background-color: #333;
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid #555;
+}
+
+.capacity-display.warning {
+    border-color: #ffaa00;
+}
+
+.capacity-display.critical {
+    border-color: #ff4444;
+}
+
+.capacity-text {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.capacity-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #222;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+    border: 1px solid #555;
+}
+
+.capacity-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00ff00 0%, #ffff00 70%, #ff4444 100%);
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.capacity-percentage {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #cccccc;
+}
+
+.expansion-hint {
+    text-align: center;
+    font-size: 0.7rem;
+    color: #888;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+/* Inventory status colors */
+.capacity-display.normal .capacity-text {
+    color: #00ff00;
+}
+
+.capacity-display.warning .capacity-text {
+    color: #ffaa00;
+}
+
+.capacity-display.critical .capacity-text {
+    color: #ff4444;
+}
+
+/* Vehicle display styles */
+.vehicle-name {
+    font-weight: bold;
+}
+
+.vehicle-safety {
+    font-size: 0.8rem;
+    color: #00aa00;
+    margin-left: 0.5rem;
+}
+
+/* Vehicle purchase interface styles */
+.vehicle-list {
+    display: grid;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.vehicle-option {
+    background-color: #333;
+    border: 2px solid #555;
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.vehicle-option.owned {
+    border-color: #00ff00;
+    background-color: #2a4a2a;
+}
+
+.vehicle-option.current {
+    border-color: #ffff00;
+    background-color: #4a4a2a;
+}
+
+.vehicle-option.affordable {
+    border-color: #ffaa00;
+}
+
+.vehicle-option.unaffordable {
+    border-color: #666;
+    opacity: 0.6;
+}
+
+.vehicle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.vehicle-name-display {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #00ff00;
+}
+
+.vehicle-cost {
+    font-size: 1.1rem;
+    color: #ffff00;
+    font-weight: bold;
+}
+
+.vehicle-description {
+    color: #cccccc;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.vehicle-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #aaaaaa;
+    margin-bottom: 1rem;
+}
+
+.vehicle-purchase-btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+}
+
+.vehicle-purchase-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.vehicle-select-btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    background-color: #333;
+    color: #00ff00;
+    border: 2px solid #00ff00;
+}
+
+.vehicle-select-btn:hover {
+    background-color: #00ff00;
+    color: #000;
+}
+
+.vehicle-select-btn.current {
+    background-color: #ffff00;
+    color: #000;
+    border-color: #ffff00;
+}
+
+.current-indicator {
+    background-color: #ffff00;
+    color: #000;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* Game status display styles */
+.game-status {
+    display: grid;
+    gap: 1.5rem;
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.status-section {
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.status-section h3 {
+    color: #00ff00;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    border-bottom: 1px solid #555;
+    padding-bottom: 0.5rem;
+}
+
+.status-section p {
+    margin: 0.5rem 0;
+    color: #cccccc;
+}
+
+.current-vehicle-info {
+    background-color: #333;
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.current-vehicle-info h3 {
+    color: #00ff00;
+    margin-bottom: 1rem;
+}
+
+.current-vehicle-info p {
+    margin: 0.5rem 0;
+    color: #cccccc;
+}
+
+/* Responsive game status */
+@media (min-width: 768px) {
+    .game-status {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.owned-indicator {
+    background-color: #00ff00;
+    color: #1a1a1a;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}/* Travel in
+terface styles */
+.current-location-info {
+    background-color: #333;
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.current-location-info h3 {
+    color: #00ff00;
+    margin-bottom: 1rem;
+}
+
+.current-location-info p {
+    margin: 0.5rem 0;
+    color: #cccccc;
+}
+
+.travel-warning {
+    color: #ffaa00 !important;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.location-list {
+    display: grid;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.location-option {
+    background-color: #333;
+    border: 2px solid #555;
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.location-option:hover {
+    border-color: #00ff00;
+    background-color: #2a4a2a;
+}
+
+.location-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.location-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #00ff00;
+}
+
+.location-modifier {
+    font-size: 1rem;
+    color: #ffff00;
+    font-weight: bold;
+}
+
+.location-description {
+    color: #cccccc;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.travel-btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    background-color: #444;
+    border: 2px solid #00ff00;
+    color: #00ff00;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.travel-btn:hover {
+    background-color: #00ff00;
+    color: #1a1a1a;
+    transform: translateY(-2px);
+}
+
+/* Responsive travel interface */
+@media (min-width: 768px) {
+    .location-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .location-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Travel result message styles */
+.text-success {
+    color: #00ff00;
+    border-color: #00ff00 !important;
+    background-color: rgba(0, 255, 0, 0.1);
+}
+
+.text-error {
+    color: #ff4444;
+    border-color: #ff4444 !important;
+    background-color: rgba(255, 68, 68, 0.1);
+}/* Enh
+anced vehicle effects display */
+.current-location-info p {
+    margin: 0.75rem 0;
+}
+
+.current-location-info p:nth-child(3) {
+    color: #00aa00;
+    font-weight: bold;
+}
+
+.current-location-info p:nth-child(4) {
+    color: #ffaa00;
+    font-size: 0.9rem;
+}
+
+/* Event message styling */
+.travel-event-message {
+    background-color: rgba(255, 170, 0, 0.1);
+    border: 1px solid #ffaa00;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    color: #ffaa00;
+    font-style: italic;
+}
+
+/* Risk indicator colors */
+.risk-low {
+    color: #00ff00;
+}
+
+.risk-medium {
+    color: #ffaa00;
+}
+
+.risk-high {
+    color: #ff4444;
+}
+/* Sto
+ry Event Interface Styles */
+.story-event-interface {
+    background-color: #2a2a2a;
+    border: 3px solid #ffaa00;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 1rem 0;
+    box-shadow: 0 4px 12px rgba(255, 170, 0, 0.3);
+}
+
+.story-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #ffaa00;
+}
+
+.story-title {
+    color: #ffaa00;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
+}
+
+.story-day {
+    background-color: #ffaa00;
+    color: #1a1a1a;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.story-content {
+    margin: 1.5rem 0;
+}
+
+.story-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+    background-color: #333;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #ffaa00;
+    font-family: 'Georgia', serif;
+    text-align: justify;
+}
+
+.story-text p {
+    margin-bottom: 1rem;
+}
+
+.story-text p:last-child {
+    margin-bottom: 0;
+}
+
+.story-actions {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.story-continue-btn {
+    background: linear-gradient(45deg, #ffaa00, #ff8800);
+    color: #1a1a1a;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(255, 170, 0, 0.3);
+}
+
+.story-continue-btn:hover {
+    background: linear-gradient(45deg, #ff8800, #ffaa00);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(255, 170, 0, 0.4);
+}
+
+/* Game End Screen with Story Conclusion */
+.game-end-screen {
+    text-align: center;
+    padding: 2rem;
+}
+
+.story-conclusion {
+    background-color: #333;
+    border: 3px solid #00ff00;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 255, 0, 0.3);
+}
+
+.story-conclusion h2 {
+    color: #00ff00;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.story-conclusion .story-text {
+    background-color: #2a2a2a;
+    border-left-color: #00ff00;
+    font-size: 1rem;
+    text-align: left;
+}
+
+.final-stats {
+    background-color: #333;
+    border: 2px solid #ffff00;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.final-stats h3 {
+    color: #ffff00;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.stats-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2a2a2a;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    border: 1px solid #555;
+}
+
+.stat-label {
+    color: #cccccc;
+    font-weight: bold;
+}
+
+.stat-value {
+    color: #ffff00;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.game-end-actions {
+    margin-top: 2rem;
+}
+
+.play-again-btn {
+    background: linear-gradient(45deg, #00ff00, #00aa00);
+    color: #1a1a1a;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 255, 0, 0.3);
+}
+
+.play-again-btn:hover {
+    background: linear-gradient(45deg, #00aa00, #00ff00);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 255, 0, 0.4);
+}
+
+/* Enhanced Event Interface with Story Integration */
+.event-interface {
+    background-color: #2a2a2a;
+    border: 2px solid #ff4444;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.event-interface.event-economic {
+    border-color: #ffaa00;
+}
+
+.event-interface.event-safety {
+    border-color: #ff4444;
+}
+
+.event-interface.event-opportunity {
+    border-color: #00ff00;
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #555;
+}
+
+.event-title {
+    color: #ff4444;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.event-interface.event-economic .event-title {
+    color: #ffaa00;
+}
+
+.event-interface.event-opportunity .event-title {
+    color: #00ff00;
+}
+
+.event-type {
+    background-color: #ff4444;
+    color: #1a1a1a;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.event-interface.event-economic .event-type {
+    background-color: #ffaa00;
+}
+
+.event-interface.event-opportunity .event-type {
+    background-color: #00ff00;
+}
+
+.event-description {
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: #333;
+    border-radius: 4px;
+    border-left: 3px solid #ff4444;
+}
+
+.event-interface.event-economic .event-description {
+    border-left-color: #ffaa00;
+}
+
+.event-interface.event-opportunity .event-description {
+    border-left-color: #00ff00;
+}
+
+.event-description p {
+    color: #e0e0e0;
+    line-height: 1.5;
+    margin: 0.5rem 0;
+}
+
+.event-details {
+    background-color: #444;
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+
+.event-details p {
+    margin: 0.5rem 0;
+    color: #cccccc;
+}
+
+.event-details strong {
+    color: #ffff00;
+}
+
+.event-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.event-action-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.event-action-btn.accept {
+    background-color: #00aa00;
+    border: 2px solid #00ff00;
+    color: #ffffff;
+}
+
+.event-action-btn.accept:hover {
+    background-color: #00ff00;
+    color: #1a1a1a;
+}
+
+.event-action-btn.decline {
+    background-color: #aa0000;
+    border: 2px solid #ff4444;
+    color: #ffffff;
+}
+
+.event-action-btn.decline:hover {
+    background-color: #ff4444;
+    color: #1a1a1a;
+}
+
+.event-action-btn.continue {
+    background-color: #666;
+    border: 2px solid #999;
+    color: #ffffff;
+}
+
+.event-action-btn.continue:hover {
+    background-color: #999;
+    color: #1a1a1a;
+}
+
+.event-action-btn.disabled {
+    background-color: #333;
+    border: 2px solid #555;
+    color: #777;
+    cursor: not-allowed;
+}
+
+.event-action-btn.disabled:hover {
+    background-color: #333;
+    color: #777;
+    transform: none;
+}
+
+.warning {
+    color: #ff4444;
+    font-size: 0.9rem;
+    font-style: italic;
+    margin-top: 0.5rem;
+}
+
+/* Event Result Display */
+.event-result {
+    background-color: #333;
+    border: 2px solid #ffaa00;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.event-result-success {
+    border-color: #00ff00;
+}
+
+.event-result-failure {
+    border-color: #ff4444;
+}
+
+.event-result h3 {
+    color: #ffaa00;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.event-result-success h3 {
+    color: #00ff00;
+}
+
+.event-result-failure h3 {
+    color: #ff4444;
+}
+
+.event-result p {
+    color: #e0e0e0;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive story and event styles */
+@media (min-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .story-title {
+        font-size: 2.2rem;
+    }
+    
+    .story-text {
+        font-size: 1.2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .story-event-interface {
+        padding: 2.5rem;
+    }
+    
+    .story-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* Health display styles */
+.health-good {
+    color: #00ff00;
+}
+
+.health-warning {
+    color: #ffaa00;
+}
+
+.health-critical {
+    color: #ff4444;
+    font-weight: bold;
+}
+
+/* Time warning styles */
+.time-warning {
+    color: #ffaa00;
+    font-weight: bold;
+    animation: pulse-warning 2s infinite;
+}
+
+.time-critical {
+    color: #ff4444;
+    font-weight: bold;
+    animation: pulse-critical 1s infinite;
+}
+
+@keyframes pulse-warning {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes pulse-critical {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Performance-based styling */
+.performance-excellent {
+    color: #00ff00;
+    font-weight: bold;
+}
+
+.performance-good {
+    color: #88ff88;
+}
+
+.performance-average {
+    color: #ffff00;
+}
+
+.performance-poor {
+    color: #ff4444;
+}
+
+/* Story milestone indicators */
+.story-milestone {
+    background: linear-gradient(45deg, #ffaa00, #ff8800);
+    color: #1a1a1a;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    display: inline-block;
+    margin-left: 0.5rem;
+}
+
+/* Narrative consistency indicators */
+.narrative-trait {
+    background-color: #444;
+    color: #cccccc;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin: 0.25rem;
+    display: inline-block;
+}
+
+.narrative-trait.cautious {
+    border-left: 3px solid #00aa00;
+}
+
+.narrative-trait.risk-taking {
+    border-left: 3px solid #ff4444;
+}
+
+.narrative-trait.opportunistic {
+    border-left: 3px solid #ffaa00;
+}
+
+/* Main Game Interface Styles */
+.main-game-interface {
+    padding: 1rem;
+}
+
+.location-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #00ff00;
+}
+
+.location-header h2 {
+    color: #00ff00;
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+}
+
+.location-description {
+    color: #cccccc;
+    font-style: italic;
+    margin: 0;
+}
+
+/* Market Section Styles */
+.market-section, .sell-section {
+    margin: 2rem 0;
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.market-section h3, .sell-section h3 {
+    color: #00ff00;
+    margin-bottom: 1rem;
+    text-align: center;
+    border-bottom: 1px solid #555;
+    padding-bottom: 0.5rem;
+}
+
+.market-items, .inventory-items {
+    display: grid;
+    gap: 1rem;
+}
+
+.market-item, .inventory-item-sell {
+    background-color: #2a2a2a;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.market-item:hover, .inventory-item-sell:hover {
+    border-color: #00ff00;
+    background-color: #333;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.item-name {
+    font-weight: bold;
+    color: #00ff00;
+    font-size: 1.1rem;
+}
+
+.item-price {
+    color: #ffff00;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.item-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.item-quantity, .item-value {
+    color: #cccccc;
+    font-size: 0.9rem;
+}
+
+.item-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.buy-btn, .sell-btn {
+    background-color: #444;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.buy-btn:hover, .sell-btn:hover {
+    background-color: #00ff00;
+    color: #1a1a1a;
+}
+
+.no-items {
+    text-align: center;
+    color: #888;
+    padding: 2rem;
+    font-style: italic;
+}
+
+/* Game Status Summary */
+.game-status-summary {
+    display: flex;
+    justify-content: space-around;
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+.status-item {
+    text-align: center;
+}
+
+.status-label {
+    display: block;
+    color: #888;
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+}
+
+.status-value {
+    display: block;
+    color: #00ff00;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+/* Buy/Sell Interface Styles */
+.buy-interface, .sell-interface {
+    background-color: #2a2a2a;
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.buy-interface h2, .sell-interface h2 {
+    color: #00ff00;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #00ff00;
+    padding-bottom: 0.5rem;
+}
+
+.item-info {
+    background-color: #333;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+}
+
+.item-info p {
+    margin: 0.5rem 0;
+    color: #cccccc;
+}
+
+.item-info strong {
+    color: #ffff00;
+}
+
+.quantity-selector {
+    margin-bottom: 1.5rem;
+}
+
+.quantity-selector label {
+    display: block;
+    color: #00ff00;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.quantity-selector input {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #333;
+    border: 2px solid #555;
+    border-radius: 4px;
+    color: #00ff00;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.quantity-selector input:focus {
+    border-color: #00ff00;
+    outline: none;
+}
+
+.quantity-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.quantity-buttons button {
+    flex: 1;
+    padding: 0.5rem;
+    background-color: #444;
+    border: 1px solid #666;
+    color: #cccccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quantity-buttons button:hover {
+    background-color: #555;
+    border-color: #00ff00;
+    color: #00ff00;
+}
+
+#total-cost, #total-earnings {
+    color: #ffff00;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-align: center;
+    background-color: #444;
+    padding: 0.75rem;
+    border-radius: 4px;
+    border: 1px solid #666;
+}
+
+.buy-actions, .sell-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.buy-confirm-btn, .sell-confirm-btn {
+    background: linear-gradient(45deg, #00aa00, #00ff00);
+    color: #1a1a1a;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.buy-confirm-btn:hover, .sell-confirm-btn:hover {
+    background: linear-gradient(45deg, #00ff00, #00aa00);
+    transform: translateY(-2px);
+}
+
+.cannot-buy {
+    background-color: #4a2a2a;
+    border: 1px solid #ff4444;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.cannot-buy p {
+    margin: 0.5rem 0;
+    color: #ff4444;
+}
+
+/* Responsive design for buy/sell interfaces */
+@media (min-width: 768px) {
+    .market-items, .inventory-items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .item-details {
+        flex-wrap: nowrap;
+    }
+    
+    .game-status-summary {
+        justify-content: space-between;
+        padding: 1.5rem 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .market-items, .inventory-items {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .main-game-interface {
+        padding: 1.5rem;
+    }
+    
+    .location-header h2 {
+        font-size: 2.2rem;
+    }
+}
+
+/* Enhanced button states */
+.buy-btn:disabled, .sell-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #333;
+    border-color: #555;
+    color: #777;
+}
+
+.buy-btn:disabled:hover, .sell-btn:disabled:hover {
+    background-color: #333;
+    color: #777;
+    transform: none;
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: "...";
+    animation: loading 1s infinite;
+}
+
+@keyframes loading {
+    0%, 33% { content: "."; }
+    34%, 66% { content: ".."; }
+    67%, 100% { content: "..."; }
+}/* Enha
+nced Responsive Design and Accessibility */
+
+/* Touch-friendly button sizing for mobile */
+@media (max-width: 767px) {
+    button {
+        min-height: 44px; /* Minimum touch target size */
+        min-width: 44px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .buy-btn, .sell-btn {
+        min-height: 44px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .header-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .header-stats span {
+        min-width: 100%;
+        text-align: center;
+    }
+    
+    .market-items, .inventory-items {
+        grid-template-columns: 1fr;
+    }
+    
+    .item-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .item-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .game-status-summary {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .quantity-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .quantity-buttons button {
+        min-height: 44px;
+    }
+    
+    .buy-actions, .sell-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .buy-confirm-btn, .sell-confirm-btn {
+        width: 100%;
+        min-height: 44px;
+    }
+}
+
+/* Tablet responsive adjustments */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .market-items, .inventory-items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .header-stats {
+        font-size: 0.95rem;
+    }
+    
+    .header-stats span {
+        min-width: 140px;
+    }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1200px) {
+    #app {
+        max-width: 1400px;
+    }
+    
+    .market-items, .inventory-items {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .main-game-interface {
+        padding: 2rem;
+    }
+    
+    .location-header h2 {
+        font-size: 2.5rem;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    body {
+        background-color: #000000;
+        color: #ffffff;
+    }
+    
+    #game-header, #game-footer, .market-section, .sell-section {
+        background-color: #000000;
+        border-color: #ffffff;
+    }
+    
+    button {
+        background-color: #000000;
+        color: #ffffff;
+        border-color: #ffffff;
+    }
+    
+    button:hover {
+        background-color: #ffffff;
+        color: #000000;
+    }
+    
+    .market-item, .inventory-item-sell {
+        background-color: #000000;
+        border-color: #ffffff;
+    }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .fade-in {
+        animation: none;
+    }
+}
+
+/* Focus management and keyboard navigation */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 3px solid #00ff00;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #1a1a1a, 0 0 0 5px #00ff00;
+}
+
+/* Skip to main content link for screen readers */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #00ff00;
+    color: #1a1a1a;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+    font-weight: bold;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Screen reader only content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Improved form accessibility */
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Better error and success message visibility */
+.text-error {
+    background-color: rgba(255, 68, 68, 0.1);
+    border: 1px solid #ff4444;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+.text-success {
+    background-color: rgba(0, 255, 0, 0.1);
+    border: 1px solid #00ff00;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+.text-warning {
+    background-color: rgba(255, 255, 0, 0.1);
+    border: 1px solid #ffff00;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+/* Improved button states for accessibility */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #666;
+    border-color: #666;
+    color: #999;
+}
+
+button:disabled:hover {
+    background-color: #666;
+    color: #999;
+    transform: none;
+}
+
+/* Loading state accessibility */
+[aria-busy="true"] {
+    cursor: wait;
+}
+
+[aria-busy="true"]::after {
+    content: " (Loading...)";
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* Better contrast for interactive elements */
+.market-item:hover, .inventory-item-sell:hover {
+    border-color: #00ff00;
+    background-color: #333;
+    box-shadow: 0 2px 4px rgba(0, 255, 0, 0.2);
+}
+
+/* Improved spacing for touch devices */
+@media (pointer: coarse) {
+    .item-actions {
+        gap: 1rem;
+    }
+    
+    .buy-btn, .sell-btn {
+        min-height: 48px;
+        min-width: 80px;
+    }
+    
+    .quantity-buttons button {
+        min-height: 48px;
+        padding: 1rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    #game-header, #game-footer {
+        display: none;
+    }
+    
+    .main-game-interface {
+        padding: 0;
+    }
+    
+    button {
+        display: none;
+    }
+    
+    .market-item, .inventory-item-sell {
+        border: 1px solid #000;
+        background: white;
+        color: black;
+    }
+}
+
+/* Dark mode support (system preference) */
+@media (prefers-color-scheme: light) {
+    /* Keep existing dark theme as default since it's part of the game's aesthetic */
+}
+
+/* Landscape orientation adjustments for mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+    .header-stats {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .header-stats span {
+        min-width: calc(50% - 0.5rem);
+    }
+    
+    .game-status-summary {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+}
+
+/* Ultra-wide screen support */
+@media (min-width: 1600px) {
+    #app {
+        max-width: 1600px;
+    }
+    
+    .market-items, .inventory-items {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* Improved focus indicators for keyboard navigation */
+.market-item:focus-within,
+.inventory-item-sell:focus-within {
+    border-color: #00ff00;
+    background-color: #333;
+    box-shadow: 0 0 0 2px #00ff00;
+}
+
+/* Better visibility for disabled states */
+.buy-btn:disabled, .sell-btn:disabled {
+    background-color: #333;
+    border-color: #555;
+    color: #777;
+    opacity: 0.6;
+}
+
+/* Improved spacing and readability */
+.item-name, .item-price {
+    line-height: 1.4;
+}
+
+.item-quantity, .item-value {
+    line-height: 1.3;
+}
+
+/* Better visual hierarchy */
+h1, h2, h3 {
+    line-height: 1.2;
+    margin-bottom: 0.5em;
+}
+
+p {
+    line-height: 1.5;
+    margin-bottom: 1em;
+}
+
+/* Improved list accessibility */
+.market-items, .inventory-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Better form field spacing */
+.quantity-selector label {
+    margin-bottom: 0.75rem;
+}
+
+.quantity-selector input {
+    margin-bottom: 1rem;
+}
+
+/* Improved button grouping */
+.buy-actions, .sell-actions {
+    margin-top: 1.5rem;
+}
+
+/* Better visual feedback for interactive elements */
+.market-item, .inventory-item-sell {
+    transition: all 0.2s ease;
+}
+
+.market-item:hover, .inventory-item-sell:hover {
+    transform: translateY(-1px);
+}
+
+/* Improved readability for small text */
+.item-quantity, .item-value, .status-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Better contrast for secondary text */
+.location-description, .item-quantity, .item-value {
+    color: #cccccc;
+}
+
+/* Improved button hierarchy */
+.buy-confirm-btn, .sell-confirm-btn {
+    font-weight: 600;
+}
+
+/* Better spacing for mobile forms */
+@media (max-width: 767px) {
+    .item-info {
+        padding: 1.5rem;
+    }
+    
+    .quantity-selector {
+        margin-bottom: 2rem;
+    }
+    
+    .buy-interface, .sell-interface {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+}/* Ke
+yboard Shortcuts Dialog */
+.keyboard-shortcuts {
+    background-color: #2a2a2a;
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.keyboard-shortcuts h2 {
+    color: #00ff00;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #00ff00;
+    padding-bottom: 0.5rem;
+}
+
+.shortcuts-content {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.shortcut-section h3 {
+    color: #ffff00;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.shortcut-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.shortcut-section li {
+    padding: 0.5rem 0;
+    color: #cccccc;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+kbd {
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 3px;
+    padding: 0.25rem 0.5rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #00ff00;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.shortcuts-actions {
+    text-align: center;
+}
+
+/* Notification styles */
+.notification {
+    font-family: inherit;
+    font-size: 0.9rem;
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+.notification-error {
+    background-color: #ff4444 !important;
+}
+
+.notification-success {
+    background-color: #00ff00 !important;
+}
+
+.notification-info {
+    background-color: #ffaa00 !important;
+}
+
+/* Responsive keyboard shortcuts */
+@media (max-width: 767px) {
+    .keyboard-shortcuts {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .shortcuts-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .shortcut-section li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    kbd {
+        align-self: flex-start;
+    }
+}
+
+@media (min-width: 768px) {
+    .shortcuts-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .shortcuts-content {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Enhanced focus styles for better keyboard navigation */
+.market-item:focus,
+.inventory-item-sell:focus,
+.difficulty-btn:focus,
+.vehicle-option:focus,
+.location-option:focus {
+    outline: 3px solid #00ff00;
+    outline-offset: 2px;
+    background-color: #333;
+    border-color: #00ff00;
+}
+
+/* Better button focus states */
+button:focus-visible {
+    outline: 3px solid #00ff00;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #1a1a1a, 0 0 0 5px #00ff00;
+}
+
+/* Input focus improvements */
+input:focus-visible {
+    outline: 3px solid #00ff00;
+    outline-offset: 2px;
+    border-color: #00ff00;
+    box-shadow: 0 0 0 2px #1a1a1a, 0 0 0 5px #00ff00;
+}
+
+/* Skip link styling */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #00ff00;
+    color: #1a1a1a;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Better visual hierarchy for headings */
+h1 {
+    font-size: 2rem;
+    color: #00ff00;
+}
+
+h2 {
+    font-size: 1.5rem;
+    color: #00ff00;
+}
+
+h3 {
+    font-size: 1.2rem;
+    color: #ffff00;
+}
+
+/* Improved list accessibility - lists are properly identified via role attributes */
+
+/* Better form labeling */
+label {
+    font-weight: bold;
+    color: #00ff00;
+}
+
+/* Improved error message styling */
+.error-message {
+    color: #ff4444;
+    background-color: rgba(255, 68, 68, 0.1);
+    border: 1px solid #ff4444;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+    font-weight: bold;
+}
+
+/* Success message styling */
+.success-message {
+    color: #00ff00;
+    background-color: rgba(0, 255, 0, 0.1);
+    border: 1px solid #00ff00;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+    font-weight: bold;
+}
+
+/* Warning message styling */
+.warning-message {
+    color: #ffaa00;
+    background-color: rgba(255, 170, 0, 0.1);
+    border: 1px solid #ffaa00;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+    font-weight: bold;
+}
+
+/* Improved table accessibility (if needed in future) */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #555;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+th {
+    background-color: #333;
+    color: #00ff00;
+    font-weight: bold;
+}
+
+/* Better contrast for links */
+a {
+    color: #00ff00;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #88ff88;
+}
+
+a:focus {
+    outline: 2px solid #00ff00;
+    outline-offset: 2px;
+}
+
+/* Improved readability for long text */
+.long-text {
+    line-height: 1.6;
+    max-width: 65ch;
+}
+
+/* Better spacing for form elements */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #555;
+    border-radius: 4px;
+    background-color: #333;
+    color: #00ff00;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #00ff00;
+    outline: none;
+}
+
+/* Improved button grouping */
+.button-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.button-group button {
+    flex: 1;
+    min-width: 120px;
+}
+
+@media (max-width: 767px) {
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .button-group button {
+        width: 100%;
+    }
+}
+
+/* Feedback Systems and UI State Display */
+
+/* Modal Overlay and Confirmation Dialog */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(2px);
+}
+
+.confirmation-dialog {
+    background-color: #2a2a2a;
+    border: 3px solid #ffaa00;
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    animation: dialogSlideIn 0.3s ease-out;
+}
+
+@keyframes dialogSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.dialog-header h3 {
+    color: #ffaa00;
+    margin: 0 0 1rem 0;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.dialog-content p {
+    color: #cccccc;
+    margin: 0 0 1.5rem 0;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.dialog-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.confirm-btn {
+    background: linear-gradient(45deg, #ff4444, #ff6666);
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.confirm-btn:hover {
+    background: linear-gradient(45deg, #ff6666, #ff4444);
+    transform: translateY(-2px);
+}
+
+.cancel-btn {
+    background: linear-gradient(45deg, #666, #888);
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background: linear-gradient(45deg, #888, #666);
+    transform: translateY(-2px);
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(2px);
+}
+
+.loading-content {
+    background-color: #2a2a2a;
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #333;
+    border-top: 4px solid #00ff00;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: #00ff00;
+    margin: 0;
+    font-weight: bold;
+}
+
+/* Error and Success Displays */
+.error-display, .success-display {
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error-display {
+    border: 3px solid #ff4444;
+}
+
+.success-display {
+    border: 3px solid #00ff00;
+}
+
+.error-header h2, .success-header h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.8rem;
+}
+
+.error-title {
+    color: #ff4444;
+}
+
+.success-title {
+    color: #00ff00;
+}
+
+.error-content p, .success-content p {
+    color: #cccccc;
+    line-height: 1.5;
+    margin: 0 0 1.5rem 0;
+}
+
+.error-actions, .success-actions {
+    margin-top: 1.5rem;
+}
+
+/* Progress Indicators */
+.progress-indicators {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #333;
+    border-radius: 4px;
+    border: 1px solid #555;
+}
+
+.progress-item {
+    flex: 1;
+    text-align: center;
+}
+
+.progress-label {
+    display: block;
+    color: #888;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #222;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #555;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    transition: width 0.5s ease;
+    border-radius: 10px;
+}
+
+.time-progress {
+    background: linear-gradient(90deg, #00ff00 0%, #ffff00 50%, #ff4444 100%);
+}
+
+.profit-progress {
+    background: linear-gradient(90deg, #ff4444 0%, #ffff00 50%, #00ff00 100%);
+}
+
+.progress-text {
+    color: #cccccc;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* Status Messages */
+.status-messages {
+    margin-bottom: 1rem;
+}
+
+.status-message {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    animation: statusSlideIn 0.3s ease-out;
+}
+
+@keyframes statusSlideIn {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.status-message.status-error {
+    background-color: rgba(255, 68, 68, 0.15);
+    border: 1px solid #ff4444;
+    color: #ff4444;
+}
+
+.status-message.status-warning {
+    background-color: rgba(255, 170, 0, 0.15);
+    border: 1px solid #ffaa00;
+    color: #ffaa00;
+}
+
+.status-message.status-info {
+    background-color: rgba(0, 255, 255, 0.15);
+    border: 1px solid #00ffff;
+    color: #00ffff;
+}
+
+.status-message.status-success {
+    background-color: rgba(0, 255, 0, 0.15);
+    border: 1px solid #00ff00;
+    color: #00ff00;
+}
+
+.status-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.status-text {
+    flex: 1;
+    line-height: 1.4;
+}
+
+/* Enhanced Button States with Feedback */
+button {
+    position: relative;
+    overflow: hidden;
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+button:disabled {
+    position: relative;
+}
+
+button:disabled::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.1) 2px,
+        rgba(0, 0, 0, 0.1) 4px
+    );
+    pointer-events: none;
+}
+
+/* Loading State for Buttons */
+button.loading {
+    color: transparent;
+    pointer-events: none;
+}
+
+button.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: buttonSpin 1s linear infinite;
+}
+
+@keyframes buttonSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Progress Indicators */
+@media (max-width: 767px) {
+    .progress-indicators {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .confirmation-dialog {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .dialog-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .confirm-btn, .cancel-btn {
+        width: 100%;
+    }
+    
+    .status-message {
+        padding: 1rem;
+    }
+    
+    .status-icon {
+        font-size: 1.5rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .progress-indicators {
+        justify-content: space-around;
+    }
+    
+    .progress-item {
+        max-width: 200px;
+    }
+}
+
+/* Enhanced Focus States for Feedback Elements */
+.confirm-btn:focus,
+.cancel-btn:focus {
+    outline: 3px solid #00ff00;
+    outline-offset: 2px;
+}
+
+.status-message:focus-within {
+    box-shadow: 0 0 0 2px #00ff00;
+}
+
+/* Improved Animation Performance */
+@media (prefers-reduced-motion: reduce) {
+    .loading-spinner,
+    .progress-fill,
+    .status-message,
+    .confirmation-dialog {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* High Contrast Mode Support for Feedback */
+@media (prefers-contrast: high) {
+    .modal-overlay {
+        background-color: rgba(0, 0, 0, 0.95);
+    }
+    
+    .confirmation-dialog,
+    .loading-content,
+    .error-display,
+    .success-display {
+        background-color: #000000;
+        border-color: #ffffff;
+    }
+    
+    .status-message {
+        background-color: #000000;
+        border-color: #ffffff;
+        color: #ffffff;
+    }
+    
+    .progress-bar {
+        background-color: #000000;
+        border-color: #ffffff;
+    }
+    
+    .progress-fill {
+        background: #ffffff !important;
+    }
+}
+
+/* Print Styles for Feedback Elements */
+@media print {
+    .modal-overlay,
+    .loading-indicator,
+    .status-messages,
+    .progress-indicators {
+        display: none;
+    }
+}
+
+/* Improved Visual Hierarchy */
+.dialog-header,
+.error-header,
+.success-header {
+    border-bottom: 1px solid #555;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Better Spacing for Content */
+.dialog-content,
+.error-content,
+.success-content {
+    padding: 0.5rem 0;
+}
+
+/* Enhanced Button Grouping in Dialogs */
+.dialog-actions,
+.error-actions,
+.success-actions {
+    border-top: 1px solid #555;
+    padding-top: 1rem;
+}
+
+/* Improved Readability for Status Text */
+.status-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Better Visual Feedback for Interactive Elements */
+.progress-bar:hover {
+    border-color: #00ff00;
+}
+
+.status-message:hover {
+    transform: translateX(2px);
+    transition: transform 0.2s ease;
+}
+
+/* Enhanced Loading States */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(42, 42, 42, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.loading-overlay .loading-spinner {
+    width: 24px;
+    height: 24px;
+    border-width: 3px;
+}
+
+/* Improved Error State Styling */
+.input-error {
+    border-color: #ff4444 !important;
+    background-color: rgba(255, 68, 68, 0.1);
+}
+
+.input-error:focus {
+    box-shadow: 0 0 0 2px #ff4444;
+}
+
+/* Success State Styling */
+.input-success {
+    border-color: #00ff00 !important;
+    background-color: rgba(0, 255, 0, 0.1);
+}
+
+.input-success:focus {
+    box-shadow: 0 0 0 2px #00ff00;
+}
+/*
+ Game End Screen Styles */
+.game-end-screen {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.game-end-header {
+    margin-bottom: 2rem;
+}
+
+.game-end-header h1 {
+    font-size: 2.5rem;
+    color: #00ff00;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+.performance-indicator {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.performance-legendary {
+    color: #ffd700;
+    background-color: rgba(255, 215, 0, 0.1);
+    border: 2px solid #ffd700;
+    animation: legendary-glow 2s infinite alternate;
+}
+
+.performance-excellent {
+    color: #00ff00;
+    background-color: rgba(0, 255, 0, 0.1);
+    border: 2px solid #00ff00;
+}
+
+.performance-good {
+    color: #00aaff;
+    background-color: rgba(0, 170, 255, 0.1);
+    border: 2px solid #00aaff;
+}
+
+.performance-average {
+    color: #ffaa00;
+    background-color: rgba(255, 170, 0, 0.1);
+    border: 2px solid #ffaa00;
+}
+
+.performance-poor {
+    color: #ff4444;
+    background-color: rgba(255, 68, 68, 0.1);
+    border: 2px solid #ff4444;
+}
+
+@keyframes legendary-glow {
+    0% { box-shadow: 0 0 20px #ffd700; }
+    100% { box-shadow: 0 0 40px #ffd700, 0 0 60px #ffd700; }
+}
+
+.final-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.stat-section {
+    background-color: #2a2a2a;
+    border: 1px solid #00ff00;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.stat-section h2 {
+    color: #00ff00;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    border-bottom: 1px solid #00ff00;
+    padding-bottom: 0.5rem;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: #333;
+    border-radius: 4px;
+    border: 1px solid #555;
+}
+
+.stat-label {
+    color: #ccc;
+    font-weight: bold;
+}
+
+.stat-value {
+    color: #00ff00;
+    font-weight: bold;
+}
+
+.stat-value.highlight {
+    color: #ffd700;
+    font-size: 1.1rem;
+}
+
+.profit-positive {
+    color: #00ff00;
+}
+
+.profit-negative {
+    color: #ff4444;
+}
+
+.story-conclusion {
+    text-align: left;
+}
+
+.story-text {
+    line-height: 1.6;
+    color: #ccc;
+}
+
+.story-text p {
+    margin-bottom: 1rem;
+}
+
+.game-end-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.primary-button, .secondary-button {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.primary-button {
+    background-color: #00ff00;
+    color: #000;
+}
+
+.primary-button:hover {
+    background-color: #00cc00;
+    box-shadow: 0 0 15px #00ff00;
+}
+
+.secondary-button {
+    background-color: transparent;
+    color: #00ff00;
+    border: 2px solid #00ff00;
+}
+
+.secondary-button:hover {
+    background-color: #00ff00;
+    color: #000;
+}
+
+/* Responsive adjustments for game end screen */
+@media (max-width: 768px) {
+    .game-end-screen {
+        padding: 1rem;
+    }
+    
+    .game-end-header h1 {
+        font-size: 2rem;
+    }
+    
+    .performance-indicator {
+        font-size: 1.2rem;
+    }
+    
+    .stat-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .game-end-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .primary-button, .secondary-button {
+        width: 100%;
+        max-width: 300px;
+    }
+}

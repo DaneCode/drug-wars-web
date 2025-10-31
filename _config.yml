@@ -1,0 +1,46 @@
+# GitHub Pages configuration for Drug Wars Game
+title: "Drug Wars - Classic Economic Simulation Game"
+description: "Recreate the classic TI-83 calculator game in your browser. Trade items, manage risks, and build your empire."
+
+# GitHub Pages settings
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# SEO settings
+lang: en
+author: Drug Wars Game
+twitter:
+  username: 
+  card: summary_large_image
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - .gitignore
+  - .vscode/
+  - .kiro/
+  - test-integration.html
+  - test-units.html
+
+# Include files that start with underscores
+include:
+  - .nojekyll
+  - .htaccess
+
+# Markdown settings
+markdown: kramdown
+highlighter: rouge
+
+# Sass settings
+sass:
+  style: compressed
+
+# Compression settings
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  startings: []
+  blanklines: false
+  profile: false
