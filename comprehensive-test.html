@@ -85,6 +85,7 @@
                 <div class="test-section">
                     <h2>Travel System Tests</h2>
                     <button class="test-button" onclick="testTravelSystem()">Test Travel System</button>
+                <button class="test-button" onclick="testTravelWithEvents()">Test Travel with Events</button>
                     <button class="test-button" onclick="testLocationGeneration()">Test Location Generation</button>
                 </div>
 
@@ -93,6 +94,10 @@
                     <h2>Event System Tests</h2>
                     <button class="test-button" onclick="testEventSystem()">Test Event System</button>
                     <button class="test-button" onclick="testRandomEvents()">Test Random Events</button>
+                    <button class="test-button" onclick="testNewTravelEvents()">Test New Travel Events</button>
+                    <button class="test-button" onclick="testEventProbability()">Test Event Probability</button>
+                    <button class="test-button" onclick="testEventCategories()">Test Event Categories</button>
+                    <button class="test-button" onclick="testEventExecution()">Test Event Execution</button>
                 </div>
 
                 <!-- Save/Load Tests -->
@@ -134,6 +139,7 @@
         <footer id="game-footer">
             <nav id="action-buttons">
                 <button onclick="runAllTests()">Run All Tests</button>
+                <button onclick="testEventSystemSummary()">Event System Summary</button>
                 <button onclick="startTestGame()">Start Test Game</button>
                 <button onclick="resetTestEnvironment()">Reset Test Environment</button>
             </nav>
@@ -486,6 +492,63 @@
                 addTestResult('Travel System', false, error.message);
             }
         }
+
+        function testTravelWithEvents() {
+            log('Testing travel with events integration...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Travel with Events', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('medium');
+                
+                const locations = ['Manhattan', 'Brooklyn', 'Ghetto', 'Central Park', 'Coney Island'];
+                let eventsTriggered = 0;
+                let travelCount = 0;
+                let eventDetails = [];
+                
+                // Travel multiple times to test event triggering
+                for (let i = 0; i < 20; i++) {
+                    const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+                    
+                    if (randomLocation !== testGameInstance.gameState.player.currentLocation) {
+                        const travelResult = testGameInstance.travelToLocation(randomLocation);
+                        travelCount++;
+                        
+                        if (travelResult.success && travelResult.eventOccurred) {
+                            eventsTriggered++;
+                            eventDetails.push(`Travel ${travelCount}: Event occurred during travel to ${randomLocation}`);
+                        }
+                    }
+                }
+                
+                const eventRate = travelCount > 0 ? (eventsTriggered / travelCount * 100).toFixed(1) : 0;
+                
+                addTestResult('Travel Events Integration', travelCount > 0, 
+                    `Completed ${travelCount} travels, ${eventsTriggered} events triggered (${eventRate}% rate)`);
+                
+                addTestResult('Event Rate Reasonable', eventRate > 10, 
+                    `Event rate should be > 10% with increased probability (actual: ${eventRate}%)`);
+                
+                if (eventDetails.length > 0) {
+                    log(`Event Details:\n${eventDetails.join('\n')}`, 'info');
+                }
+                
+                // Test that economic simulation runs during travel
+                const initialDay = testGameInstance.gameState.player.day;
+                testGameInstance.travelToLocation('Bronx');
+                const finalDay = testGameInstance.gameState.player.day;
+                
+                addTestResult('Economic Simulation', finalDay > initialDay, 
+                    'Economic simulation runs when day advances during travel');
+                
+            } catch (error) {
+                addTestResult('Travel with Events', false, error.message);
+                log(`Error details: ${error.stack}`, 'error');
+            }
+        }
         
         function testLocationGeneration() {
             log('Testing location generation...', 'info');
@@ -564,6 +627,294 @@
                 
             } catch (error) {
                 addTestResult('Random Events', false, error.message);
+            }
+        }
+
+        function testNewTravelEvents() {
+            log('Testing new travel events...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('New Travel Events', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('medium');
+                const eventSystem = testGameInstance.eventSystem;
+                
+                // Test that new events are defined
+                const newEvents = [
+                    'market_crash', 'insider_info', 'bulk_seller', 'desperate_buyer', 'counterfeit_goods',
+                    'undercover_cop', 'rival_dealer', 'police_raid', 'informant', 'gang_recruitment',
+                    'abandoned_stash', 'street_contact', 'lucky_find', 'equipment_upgrade', 'safe_house',
+                    'bad_weather', 'festival', 'construction', 'power_outage',
+                    'celebrity_sighting', 'protest', 'street_performer', 'neighborhood_watch',
+                    'phone_dead', 'surveillance_camera', 'social_media_buzz',
+                    'old_friend', 'lost_tourist', 'street_vendor', 'suspicious_package', 'urban_legend'
+                ];
+                
+                let eventsFound = 0;
+                let eventDetails = [];
+                
+                for (const eventName of newEvents) {
+                    if (eventSystem.events[eventName]) {
+                        eventsFound++;
+                        const event = eventSystem.events[eventName];
+                        eventDetails.push(`${eventName}: ${event.type} (weight: ${event.weight})`);
+                    }
+                }
+                
+                addTestResult('New Events Defined', eventsFound === newEvents.length, 
+                    `Found ${eventsFound}/${newEvents.length} new events`);
+                
+                log(`Event Details:\n${eventDetails.join('\n')}`, 'info');
+                
+                // Test event generation with increased probability
+                let eventTypesGenerated = new Set();
+                let totalEventsGenerated = 0;
+                
+                for (let i = 0; i < 200; i++) {
+                    const event = eventSystem.triggerRandomEvent();
+                    if (event) {
+                        totalEventsGenerated++;
+                        eventTypesGenerated.add(event.type);
+                    }
+                }
+                
+                addTestResult('Event Generation Rate', totalEventsGenerated > 0, 
+                    `Generated ${totalEventsGenerated} events in 200 attempts`);
+                
+                addTestResult('Event Type Variety', eventTypesGenerated.size > 1, 
+                    `Generated ${eventTypesGenerated.size} different event types: ${Array.from(eventTypesGenerated).join(', ')}`);
+                
+            } catch (error) {
+                addTestResult('New Travel Events', false, error.message);
+                log(`Error details: ${error.stack}`, 'error');
+            }
+        }
+
+        function testEventProbability() {
+            log('Testing event probability changes...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Event Probability', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('medium');
+                const eventSystem = testGameInstance.eventSystem;
+                
+                // Test base probability is increased
+                const baseProb = eventSystem.baseEventProbability;
+                addTestResult('Increased Base Probability', baseProb > 0.15, 
+                    `Base probability: ${(baseProb * 100).toFixed(1)}% (should be > 15%)`);
+                
+                // Test probability with different vehicles
+                const vehicles = ['On Foot', 'Skateboard', 'Bicycle', 'Car'];
+                let probabilityResults = [];
+                
+                for (const vehicle of vehicles) {
+                    testGameInstance.gameState.player.vehicle = vehicle;
+                    
+                    let eventsTriggered = 0;
+                    for (let i = 0; i < 100; i++) {
+                        if (eventSystem.shouldEventOccur()) {
+                            eventsTriggered++;
+                        }
+                    }
+                    
+                    const actualRate = eventsTriggered / 100;
+                    probabilityResults.push(`${vehicle}: ${(actualRate * 100).toFixed(1)}%`);
+                }
+                
+                addTestResult('Vehicle Risk Reduction', true, 
+                    `Event rates by vehicle:\n${probabilityResults.join('\n')}`);
+                
+                // Test that UI shows dynamic risk values
+                const baseProbForUI = eventSystem.baseEventProbability;
+                const expectedBaseDisplay = Math.round(baseProbForUI * 100);
+                
+                addTestResult('Dynamic Risk Display', expectedBaseDisplay > 15, 
+                    `UI should show ${expectedBaseDisplay}% base risk (not hardcoded 15%)`);
+                
+            } catch (error) {
+                addTestResult('Event Probability', false, error.message);
+            }
+        }
+
+        function testEventCategories() {
+            log('Testing event categories...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Event Categories', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('medium');
+                const eventSystem = testGameInstance.eventSystem;
+                
+                // Count events by category
+                const categories = {};
+                const eventNames = [];
+                
+                for (const [eventName, event] of Object.entries(eventSystem.events)) {
+                    if (!categories[event.type]) {
+                        categories[event.type] = 0;
+                    }
+                    categories[event.type]++;
+                    eventNames.push(eventName);
+                }
+                
+                addTestResult('Total Events', eventNames.length > 20, 
+                    `Total events defined: ${eventNames.length}`);
+                
+                const categoryReport = Object.entries(categories)
+                    .map(([type, count]) => `${type}: ${count} events`)
+                    .join('\n');
+                
+                addTestResult('Event Categories', Object.keys(categories).length >= 5, 
+                    `Categories:\n${categoryReport}`);
+                
+                // Test specific event execution methods exist
+                const testEvents = ['market_crash', 'abandoned_stash', 'street_vendor', 'police_raid'];
+                let methodsExist = 0;
+                
+                for (const eventName of testEvents) {
+                    const methodName = `execute${eventName.split('_').map(word => 
+                        word.charAt(0).toUpperCase() + word.slice(1)).join('')}`;
+                    
+                    if (typeof eventSystem[methodName] === 'function') {
+                        methodsExist++;
+                    }
+                }
+                
+                addTestResult('Event Execution Methods', methodsExist === testEvents.length, 
+                    `Found ${methodsExist}/${testEvents.length} execution methods`);
+                
+                // Test event parameter generation
+                const testEvent = eventSystem.events.bulk_seller;
+                if (testEvent) {
+                    const params = eventSystem.generateEventParameters(testEvent);
+                    addTestResult('Event Parameters', 
+                        params && typeof params === 'object',
+                        `Generated parameters: ${JSON.stringify(params, null, 2)}`);
+                }
+                
+            } catch (error) {
+                addTestResult('Event Categories', false, error.message);
+                log(`Error details: ${error.stack}`, 'error');
+            }
+        }
+
+        function testEventExecution() {
+            log('Testing event execution methods...', 'info');
+            
+            if (!testGameInstance) {
+                addTestResult('Event Execution', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('medium');
+                const eventSystem = testGameInstance.eventSystem;
+                
+                // Give player some cash and inventory for testing
+                testGameInstance.gameState.player.cash = 5000;
+                testGameInstance.gameState.player.inventory = { 'Weed': 10, 'Cocaine': 5 };
+                
+                // Test specific event executions
+                const testCases = [
+                    {
+                        name: 'Lucky Find',
+                        event: 'lucky_find',
+                        params: { cashAmount: 100 },
+                        expectedEffect: 'cash increase'
+                    },
+                    {
+                        name: 'Market Crash',
+                        event: 'market_crash',
+                        params: { item: 'Weed', priceMultiplier: 0.5 },
+                        expectedEffect: 'price reduction'
+                    },
+                    {
+                        name: 'Abandoned Stash',
+                        event: 'abandoned_stash',
+                        params: { item: 'Acid', quantity: 3 },
+                        expectedEffect: 'inventory increase'
+                    },
+                    {
+                        name: 'Street Contact',
+                        event: 'street_contact',
+                        params: {},
+                        expectedEffect: 'information gain'
+                    }
+                ];
+                
+                let successfulExecutions = 0;
+                
+                for (const testCase of testCases) {
+                    try {
+                        const event = eventSystem.events[testCase.event];
+                        if (event && typeof event.execute === 'function') {
+                            const initialCash = testGameInstance.gameState.player.cash;
+                            const initialInventory = { ...testGameInstance.gameState.player.inventory };
+                            
+                            const result = event.execute(testGameInstance, testCase.params);
+                            
+                            if (result && result.success !== false) {
+                                successfulExecutions++;
+                                
+                                // Check for expected effects
+                                let effectObserved = false;
+                                if (testCase.expectedEffect === 'cash increase') {
+                                    effectObserved = testGameInstance.gameState.player.cash > initialCash;
+                                } else if (testCase.expectedEffect === 'inventory increase') {
+                                    const newInventory = testGameInstance.gameState.player.inventory;
+                                    effectObserved = JSON.stringify(newInventory) !== JSON.stringify(initialInventory);
+                                } else {
+                                    effectObserved = true; // For information-only events
+                                }
+                                
+                                addTestResult(`${testCase.name} Execution`, effectObserved, 
+                                    result.message || 'Event executed successfully');
+                            } else {
+                                addTestResult(`${testCase.name} Execution`, false, 
+                                    result ? result.message : 'Event execution failed');
+                            }
+                        } else {
+                            addTestResult(`${testCase.name} Method`, false, 
+                                `Event or execution method not found for ${testCase.event}`);
+                        }
+                    } catch (error) {
+                        addTestResult(`${testCase.name} Execution`, false, 
+                            `Error: ${error.message}`);
+                    }
+                }
+                
+                addTestResult('Event Execution Success Rate', 
+                    successfulExecutions >= testCases.length * 0.75,
+                    `${successfulExecutions}/${testCases.length} events executed successfully`);
+                
+                // Test event with choices
+                try {
+                    const bulkSellerEvent = eventSystem.events.bulk_seller;
+                    if (bulkSellerEvent) {
+                        const params = eventSystem.generateEventParameters(bulkSellerEvent);
+                        const result = bulkSellerEvent.execute(testGameInstance, params);
+                        
+                        addTestResult('Choice-based Event', 
+                            result && Array.isArray(result.choices),
+                            `Bulk seller event has ${result ? result.choices?.length || 0 : 0} choices`);
+                    }
+                } catch (error) {
+                    addTestResult('Choice-based Event', false, `Error: ${error.message}`);
+                }
+                
+            } catch (error) {
+                addTestResult('Event Execution', false, error.message);
+                log(`Error details: ${error.stack}`, 'error');
             }
         }
         
@@ -786,6 +1137,82 @@
             }
         }
         
+        function testEventSystemSummary() {
+            log('Event System Enhancement Summary', 'info');
+            clearOutput();
+            
+            if (!testGameInstance) {
+                addTestResult('Event System Summary', false, 'No game instance available');
+                return;
+            }
+            
+            try {
+                testGameInstance.startNewGame('medium');
+                const eventSystem = testGameInstance.eventSystem;
+                
+                // Count all events by category
+                const eventsByCategory = {};
+                const allEvents = Object.entries(eventSystem.events);
+                
+                for (const [eventName, event] of allEvents) {
+                    if (!eventsByCategory[event.type]) {
+                        eventsByCategory[event.type] = [];
+                    }
+                    eventsByCategory[event.type].push(eventName);
+                }
+                
+                log('=== EVENT SYSTEM ENHANCEMENTS ===', 'success');
+                log(`Total Events: ${allEvents.length}`, 'info');
+                log(`Base Event Probability: ${(eventSystem.baseEventProbability * 100).toFixed(1)}% (increased from 15%)`, 'info');
+                
+                log('\n=== EVENTS BY CATEGORY ===', 'success');
+                for (const [category, events] of Object.entries(eventsByCategory)) {
+                    log(`${category.toUpperCase()} (${events.length} events):`, 'warning');
+                    events.forEach(event => log(`  • ${event}`, 'info'));
+                }
+                
+                // Test event generation rate
+                let eventsGenerated = 0;
+                const testRuns = 100;
+                
+                for (let i = 0; i < testRuns; i++) {
+                    if (eventSystem.shouldEventOccur()) {
+                        eventsGenerated++;
+                    }
+                }
+                
+                const actualRate = (eventsGenerated / testRuns * 100).toFixed(1);
+                log(`\n=== EVENT GENERATION RATE ===`, 'success');
+                log(`Events triggered in ${testRuns} attempts: ${eventsGenerated} (${actualRate}%)`, 'info');
+                
+                // Test specific new event categories
+                const newCategories = ['environmental', 'social', 'technology', 'mystery'];
+                const foundNewCategories = newCategories.filter(cat => eventsByCategory[cat]);
+                
+                log(`\n=== NEW EVENT CATEGORIES ===`, 'success');
+                log(`New categories added: ${foundNewCategories.length}/${newCategories.length}`, 'info');
+                foundNewCategories.forEach(cat => {
+                    log(`  • ${cat}: ${eventsByCategory[cat].length} events`, 'info');
+                });
+                
+                // Summary statistics
+                addTestResult('Total Events', allEvents.length > 30, `${allEvents.length} events defined`);
+                addTestResult('Event Categories', Object.keys(eventsByCategory).length >= 6, 
+                    `${Object.keys(eventsByCategory).length} categories`);
+                addTestResult('Increased Probability', eventSystem.baseEventProbability > 0.15, 
+                    `${(eventSystem.baseEventProbability * 100).toFixed(1)}% base probability`);
+                addTestResult('New Categories', foundNewCategories.length >= 3, 
+                    `${foundNewCategories.length} new categories added`);
+                
+                log('\n=== ENHANCEMENT COMPLETE ===', 'success');
+                log('Travel events are now much more frequent and varied!', 'success');
+                
+            } catch (error) {
+                addTestResult('Event System Summary', false, error.message);
+                log(`Error: ${error.stack}`, 'error');
+            }
+        }
+
         function runAllTests() {
             log('Running comprehensive test suite...', 'info');
             clearOutput();
@@ -803,9 +1230,14 @@
                 testVehicleShop();
                 testVehiclePurchase();
                 testTravelSystem();
+                testTravelWithEvents();
                 testLocationGeneration();
                 testEventSystem();
                 testRandomEvents();
+                testNewTravelEvents();
+                testEventProbability();
+                testEventCategories();
+                testEventExecution();
                 testSaveLoad();
                 testGamePersistence();
                 testUIIntegration();

@@ -428,6 +428,87 @@
                 console.warn('Game not ready for purchaseVehicleFromShop');
                 return null;
             },
+            showDebtPaymentInterface: () => {
+                console.log('showDebtPaymentInterface called');
+                if (gameReady && gameInstance && gameInstance.uiManager) {
+                    try {
+                        gameInstance.uiManager.showDebtPaymentInterface();
+                    } catch (error) {
+                        console.error('Error showing debt payment interface:', error);
+                    }
+                } else {
+                    console.warn('Game not ready for showDebtPaymentInterface');
+                }
+            },
+            showEconomicReport: () => {
+                console.log('showEconomicReport called');
+                if (gameReady && gameInstance && gameInstance.uiManager) {
+                    try {
+                        gameInstance.uiManager.showEconomicReport();
+                    } catch (error) {
+                        console.error('Error showing economic report:', error);
+                    }
+                } else {
+                    console.warn('Game not ready for showEconomicReport');
+                }
+            },
+            makeDebtPayment: (amount) => {
+                console.log('makeDebtPayment called with amount:', amount);
+                if (gameReady && gameInstance) {
+                    try {
+                        const result = gameInstance.makeDebtPayment(amount);
+                        if (result.success) {
+                            gameInstance.uiManager.showNotification(result.message, 'success');
+                            gameInstance.uiManager.showDebtPaymentInterface(); // Refresh interface
+                        } else {
+                            gameInstance.uiManager.showNotification(result.message, 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error making debt payment:', error);
+                    }
+                } else {
+                    console.warn('Game not ready for makeDebtPayment');
+                }
+            },
+            makeCustomDebtPayment: () => {
+                console.log('makeCustomDebtPayment called');
+                if (gameReady && gameInstance) {
+                    try {
+                        const customAmount = parseInt(document.getElementById('customPayment').value);
+                        if (customAmount && customAmount > 0) {
+                            const result = gameInstance.makeDebtPayment(customAmount);
+                            if (result.success) {
+                                gameInstance.uiManager.showNotification(result.message, 'success');
+                                gameInstance.uiManager.showDebtPaymentInterface(); // Refresh interface
+                            } else {
+                                gameInstance.uiManager.showNotification(result.message, 'error');
+                            }
+                        } else {
+                            gameInstance.uiManager.showNotification('Please enter a valid payment amount', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error making custom debt payment:', error);
+                    }
+                } else {
+                    console.warn('Game not ready for makeCustomDebtPayment');
+                }
+            },
+            updateCustomPaymentButton: (value) => {
+                const button = document.getElementById('customPaymentBtn');
+                const amount = parseInt(value);
+                
+                if (button && gameReady && gameInstance) {
+                    if (amount && amount > 0 && amount <= gameInstance.gameState.player.cash) {
+                        button.disabled = false;
+                        button.textContent = `Pay $${amount.toLocaleString()}`;
+                        button.classList.remove('disabled');
+                    } else {
+                        button.disabled = true;
+                        button.textContent = 'Pay Custom Amount';
+                        button.classList.add('disabled');
+                    }
+                }
+            },
             loadSavedGame: () => {
                 console.log('loadSavedGame called');
                 if (gameReady && gameInstance) {
