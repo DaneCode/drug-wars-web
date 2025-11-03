@@ -297,12 +297,17 @@ class GameEngine {
             eventOccurred = true;
             eventMessage = `${randomEvent.title}\n${randomEvent.description}`;
             
-            // For now, auto-execute events during travel
-            // In future UI improvements, this could show event choices
-            const eventResult = this.eventSystem.executeCurrentEvent();
-            if (eventResult.message) {
-                eventMessage += `\n${eventResult.message}`;
-            }
+            // Show event interface for player to make choices
+            setTimeout(() => {
+                this.uiManager.showEventInterface(randomEvent);
+            }, 1000);
+            
+            return {
+                success: true,
+                message: eventMessage,
+                eventOccurred: true,
+                event: randomEvent
+            };
         }
         
         // Update player location
@@ -914,6 +919,11 @@ class GameEngine {
             this.checkGameEnd();
         }
         
+        // Don't update UI if game has ended (to avoid interfering with game end screen)
+        if (this.gameState.gameEnded) {
+            return;
+        }
+        
         console.log('updateDisplay called - current cash:', this.gameState.player.cash);
         this.uiManager.updateHeader(this.gameState.player);
         this.uiManager.updateInventory(this.gameState.player);
@@ -1115,11 +1125,11 @@ class GameEngine {
     processDebtInterest() {
         if (this.gameState.player.mobDebt <= 0) return;
         
-        // Apply compound daily interest
-        const interest = this.gameState.player.mobDebt * this.gameState.player.dailyInterestRate;
-        this.gameState.player.mobDebt += interest;
+        // Apply compound daily interest and round to nearest cent
+        const interest = Math.round(this.gameState.player.mobDebt * this.gameState.player.dailyInterestRate * 100) / 100;
+        this.gameState.player.mobDebt = Math.round((this.gameState.player.mobDebt + interest) * 100) / 100;
         
-        console.log(`Day ${this.gameState.player.day}: Debt interest of $${Math.round(interest)} applied. Total debt: $${Math.round(this.gameState.player.mobDebt)}`);
+        console.log(`Day ${this.gameState.player.day}: Debt interest of $${interest.toFixed(2)} applied. Total debt: $${this.gameState.player.mobDebt.toFixed(2)}`);
         
         // Track last interest application
         this.gameState.player.lastInterestDay = this.gameState.player.day;
@@ -1172,8 +1182,8 @@ class GameEngine {
             return { success: false, message: 'Not enough cash for payment' };
         }
         
-        if (amount > this.gameState.player.mobDebt) {
-            amount = this.gameState.player.mobDebt; // Don't overpay
+        if (amount >= this.gameState.player.mobDebt) {
+            amount = this.gameState.player.mobDebt; // Pay exact debt amount to reach zero
         }
         
         // Process payment
@@ -1188,10 +1198,19 @@ class GameEngine {
         // Increase reputation for making payments
         this.gameState.player.reputation += Math.floor(amount / 5000); // $5000 = 1 reputation point
         
-        let message = `Paid $${amount.toLocaleString()} to the mob. Remaining debt: $${Math.round(this.gameState.player.mobDebt).toLocaleString()}`;
+        let message = `Paid $${amount.toFixed(2)} to the mob. Remaining debt: $${this.gameState.player.mobDebt.toFixed(2)}`;
         
         if (this.gameState.player.mobDebt <= 0) {
             message += '\n🎉 DEBT PAID OFF! You are free from the mob!';
+            // Ensure debt is exactly zero
+            this.gameState.player.mobDebt = 0;
+            
+            // Immediately trigger game end for debt payoff
+            setTimeout(() => {
+                this.gameState.gameOverReason = 'debt_paid';
+                this.gameState.gameOverMessage = '🎉 Outstanding Achievement! You\'ve paid off your debt to the mob and are now free!';
+                this.endGame();
+            }, 2000); // 2 second delay to let the player see the payment message
         }
         
         return { success: true, message: message };
@@ -4910,7 +4929,7 @@ class UIManager {
             if (player.mobDebt !== undefined && player.mobDebt > 0) {
                 const debtClass = player.mobDebt > 80000 ? 'debt-critical' : 
                                  player.mobDebt > 50000 ? 'debt-warning' : 'debt-good';
-                cashText += ` | Debt: <span class="${debtClass}">$${Math.round(player.mobDebt).toLocaleString()}</span>`;
+                cashText += ` | Debt: <span class="${debtClass}">$${player.mobDebt.toFixed(2)}</span>`;
                 
                 // Add mob pressure indicator
                 if (player.mobPressureLevel > 0) {
@@ -5475,14 +5494,14 @@ class UIManager {
      */
     showDebtPaymentInterface() {
         const player = this.gameEngine.gameState.player;
-        const debtRemaining = Math.round(player.mobDebt);
+        const debtRemaining = player.mobDebt; // Use exact debt amount
         const daysRemaining = player.maxDays - player.day;
-        const dailyInterest = Math.round(player.mobDebt * player.dailyInterestRate);
+        const dailyInterest = Math.round(player.mobDebt * player.dailyInterestRate * 100) / 100;
         
         // Calculate suggested payment amounts
         const minimumPayment = Math.max(1000, Math.round(player.mobDebt * 0.05)); // 5% or $1000 minimum
         const halfDebt = Math.round(player.mobDebt * 0.5);
-        const fullDebt = debtRemaining;
+        const fullDebt = player.mobDebt; // Use exact debt amount, not rounded
         
         this.elements.mainPanel.innerHTML = `
             <div class="debt-payment-interface">
@@ -5494,11 +5513,11 @@ class UIManager {
                         <div class="debt-details">
                             <div class="debt-item">
                                 <span class="label">Outstanding Debt:</span>
-                                <span class="value debt-critical">$${debtRemaining.toLocaleString()}</span>
+                                <span class="value debt-critical">$${debtRemaining.toFixed(2)}</span>
                             </div>
                             <div class="debt-item">
                                 <span class="label">Daily Interest:</span>
-                                <span class="value debt-warning">$${dailyInterest.toLocaleString()} (${(player.dailyInterestRate * 100).toFixed(1)}%)</span>
+                                <span class="value debt-warning">$${dailyInterest.toFixed(2)} (${(player.dailyInterestRate * 100).toFixed(1)}%)</span>
                             </div>
                             <div class="debt-item">
                                 <span class="label">Days Remaining:</span>
@@ -5547,7 +5566,7 @@ class UIManager {
                         ${player.cash >= fullDebt ? `
                         <div class="payment-option">
                             <button onclick="game.makeDebtPayment(${fullDebt})" class="payment-btn full">
-                                Pay Full Debt<br>$${fullDebt.toLocaleString()}
+                                Pay Full Debt<br>$${fullDebt.toFixed(2)}
                             </button>
                             <small>🎉 FREEDOM! 🎉</small>
                         </div>
@@ -5761,6 +5780,323 @@ class UIManager {
     }
 
     /**
+     * Get choices for events without executing them
+     */
+    getEventChoices(event) {
+        const params = event.params;
+        const gameEngine = this.gameEngine;
+        
+        // Define choices for events that have them
+        switch (event.event) {
+            case gameEngine.eventSystem.events.bulk_seller:
+                const totalCost = params.discountPrice * params.quantity;
+                return [
+                    {
+                        text: `Buy ${params.quantity} ${params.item} for $${totalCost.toLocaleString()}`,
+                        action: () => {
+                            if (gameEngine.gameState.player.cash >= totalCost && gameEngine.hasInventorySpace(params.quantity)) {
+                                gameEngine.gameState.player.cash -= totalCost;
+                                gameEngine.gameState.player.inventory[params.item] = (gameEngine.gameState.player.inventory[params.item] || 0) + params.quantity;
+                                return { success: true, message: `Bought ${params.quantity} ${params.item} for $${totalCost.toLocaleString()}!` };
+                            } else {
+                                return { success: false, message: 'Not enough cash or inventory space!' };
+                            }
+                        }
+                    },
+                    {
+                        text: 'Pass on the deal',
+                        action: () => ({ success: true, message: 'You decided not to buy.' })
+                    }
+                ];
+                
+            case gameEngine.eventSystem.events.desperate_buyer:
+                const playerInventory = gameEngine.gameState.player.inventory[params.item] || 0;
+                if (playerInventory === 0) {
+                    return [
+                        {
+                            text: 'Continue',
+                            action: () => ({ success: true, message: `You don't have any ${params.item} to sell.` })
+                        }
+                    ];
+                }
+                const totalEarnings = params.premiumPrice * playerInventory;
+                return [
+                    {
+                        text: `Sell all ${playerInventory} ${params.item} for $${totalEarnings.toLocaleString()}`,
+                        action: () => {
+                            gameEngine.gameState.player.cash += totalEarnings;
+                            delete gameEngine.gameState.player.inventory[params.item];
+                            return { success: true, message: `Sold ${playerInventory} ${params.item} for $${totalEarnings.toLocaleString()}!` };
+                        }
+                    },
+                    {
+                        text: 'Keep your inventory',
+                        action: () => ({ success: true, message: 'You decided to keep your goods.' })
+                    }
+                ];
+                
+            case gameEngine.eventSystem.events.rival_dealer:
+                return [
+                    {
+                        text: `Pay $${params.taxAmount.toLocaleString()} tax`,
+                        action: () => {
+                            if (gameEngine.gameState.player.cash >= params.taxAmount) {
+                                gameEngine.gameState.player.cash -= params.taxAmount;
+                                return { success: true, message: `Paid $${params.taxAmount.toLocaleString()} to avoid trouble.` };
+                            } else {
+                                return { success: false, message: 'Not enough cash to pay!' };
+                            }
+                        }
+                    },
+                    {
+                        text: 'Refuse to pay',
+                        action: () => {
+                            const inventoryLoss = Math.floor(Math.random() * 3) + 1;
+                            const items = Object.keys(gameEngine.gameState.player.inventory);
+                            if (items.length > 0) {
+                                const randomItem = items[Math.floor(Math.random() * items.length)];
+                                const lostQuantity = Math.min(inventoryLoss, gameEngine.gameState.player.inventory[randomItem]);
+                                gameEngine.gameState.player.inventory[randomItem] -= lostQuantity;
+                                if (gameEngine.gameState.player.inventory[randomItem] <= 0) {
+                                    delete gameEngine.gameState.player.inventory[randomItem];
+                                }
+                                return { success: true, message: `They took ${lostQuantity} ${randomItem} as "payment"!` };
+                            }
+                            return { success: true, message: 'They roughed you up but you had nothing to take.' };
+                        }
+                    }
+                ];
+                
+            case gameEngine.eventSystem.events.gang_recruitment:
+                return [
+                    {
+                        text: `Pay $${params.protectionFee.toLocaleString()} for protection`,
+                        action: () => {
+                            if (gameEngine.gameState.player.cash >= params.protectionFee) {
+                                gameEngine.gameState.player.cash -= params.protectionFee;
+                                return { success: true, message: `Paid protection fee. You'll have fewer problems in this area.` };
+                            } else {
+                                return { success: false, message: 'Not enough cash for protection!' };
+                            }
+                        }
+                    },
+                    {
+                        text: 'Decline politely',
+                        action: () => ({ success: true, message: 'You politely declined their offer.' })
+                    }
+                ];
+                
+            case gameEngine.eventSystem.events.equipment_upgrade:
+                return [
+                    {
+                        text: `Buy upgrade for $${params.upgradeCost.toLocaleString()}`,
+                        action: () => {
+                            if (gameEngine.gameState.player.cash >= params.upgradeCost) {
+                                gameEngine.gameState.player.cash -= params.upgradeCost;
+                                return { success: true, message: `Purchased ${params.benefit}!` };
+                            } else {
+                                return { success: false, message: 'Not enough cash for the upgrade!' };
+                            }
+                        }
+                    },
+                    {
+                        text: 'Not interested',
+                        action: () => ({ success: true, message: 'You passed on the upgrade.' })
+                    }
+                ];
+                
+            case gameEngine.eventSystem.events.street_performer:
+                return [
+                    {
+                        text: `Tip the performer $${params.tipAmount}`,
+                        action: () => {
+                            if (gameEngine.gameState.player.cash >= params.tipAmount) {
+                                gameEngine.gameState.player.cash -= params.tipAmount;
+                                return { success: true, message: 'The performer appreciates your support!' };
+                            } else {
+                                return { success: false, message: 'Not enough cash to tip!' };
+                            }
+                        }
+                    },
+                    {
+                        text: 'Just watch',
+                        action: () => ({ success: true, message: 'You enjoyed the free show.' })
+                    }
+                ];
+                
+            case gameEngine.eventSystem.events.old_friend:
+                return [
+                    {
+                        text: 'Catch up and ask for help',
+                        action: () => {
+                            gameEngine.gameState.player.cash += params.cashGift;
+                            return { success: true, message: `Your friend lent you $${params.cashGift.toLocaleString()}!` };
+                        }
+                    },
+                    {
+                        text: 'Just say hello',
+                        action: () => ({ success: true, message: 'Nice to see a familiar face.' })
+                    }
+                ];
+                
+            case gameEngine.eventSystem.events.lost_tourist:
+                return [
+                    {
+                        text: 'Help them out',
+                        action: () => {
+                            gameEngine.gameState.player.cash += params.rewardAmount;
+                            return { success: true, message: `They tipped you $${params.rewardAmount} for your help!` };
+                        }
+                    },
+                    {
+                        text: 'Ignore them',
+                        action: () => ({ success: true, message: 'You kept walking.' })
+                    }
+                ];
+                
+            case gameEngine.eventSystem.events.street_vendor:
+                return [
+                    {
+                        text: `Buy meal for $${params.mealCost} and chat`,
+                        action: () => {
+                            if (gameEngine.gameState.player.cash >= params.mealCost) {
+                                gameEngine.gameState.player.cash -= params.mealCost;
+                                return { success: true, message: `Good meal and useful info: ${params.gossip}` };
+                            } else {
+                                return { success: false, message: 'Not enough cash for food!' };
+                            }
+                        }
+                    },
+                    {
+                        text: 'Just keep walking',
+                        action: () => ({ success: true, message: 'You continued on your way.' })
+                    }
+                ];
+                
+            case gameEngine.eventSystem.events.suspicious_package:
+                return [
+                    {
+                        text: 'Open it carefully',
+                        action: () => {
+                            const outcomes = [
+                                { type: 'cash', amount: 500, message: 'It contained $500 in cash!' },
+                                { type: 'item', item: 'Weed', quantity: 5, message: 'It contained 5 units of Weed!' },
+                                { type: 'nothing', message: 'It was empty. Someone\'s playing games.' },
+                                { type: 'trap', message: 'It was a trap! You barely avoided trouble.' }
+                            ];
+                            
+                            const outcome = outcomes[Math.floor(Math.random() * outcomes.length)];
+                            
+                            if (outcome.type === 'cash') {
+                                gameEngine.gameState.player.cash += outcome.amount;
+                            } else if (outcome.type === 'item' && gameEngine.hasInventorySpace(outcome.quantity)) {
+                                gameEngine.gameState.player.inventory[outcome.item] = 
+                                    (gameEngine.gameState.player.inventory[outcome.item] || 0) + outcome.quantity;
+                            }
+                            return { success: true, message: outcome.message };
+                        }
+                    },
+                    {
+                        text: 'Leave it alone',
+                        action: () => ({ success: true, message: 'Better safe than sorry. You left it alone.' })
+                    }
+                ];
+                
+            case gameEngine.eventSystem.events.loan_shark:
+                return [
+                    {
+                        text: `Accept Loan ($${params.loanAmount.toLocaleString()})`,
+                        action: () => {
+                            gameEngine.gameState.player.cash += params.loanAmount;
+                            // Add loan tracking (this would need to be implemented)
+                            return { success: true, message: `Received $${params.loanAmount.toLocaleString()} loan at ${Math.round(params.interestRate)}% interest!` };
+                        }
+                    },
+                    {
+                        text: 'Decline',
+                        action: () => ({ success: true, message: 'You wisely declined the loan shark\'s offer.' })
+                    }
+                ];
+                
+            case gameEngine.eventSystem.events.cheap_deal:
+                const marketData = gameEngine.getCurrentMarket();
+                const itemMarketPrice = marketData && marketData[params.item] ? marketData[params.item].price : 0;
+                const dealDiscountedPrice = Math.floor(itemMarketPrice * 0.5);
+                const dealTotalCost = dealDiscountedPrice * params.quantity;
+                const canAffordDeal = gameEngine.gameState.player.cash >= dealTotalCost;
+                const hasSpaceForDeal = gameEngine.hasInventorySpace(params.quantity);
+                
+                const choices = [
+                    {
+                        text: `Buy for $${dealTotalCost.toLocaleString()}`,
+                        action: () => {
+                            if (canAffordDeal && hasSpaceForDeal) {
+                                gameEngine.gameState.player.cash -= dealTotalCost;
+                                gameEngine.gameState.player.inventory[params.item] = 
+                                    (gameEngine.gameState.player.inventory[params.item] || 0) + params.quantity;
+                                return { success: true, message: `Bought ${params.quantity} ${params.item} for $${dealTotalCost.toLocaleString()}!` };
+                            } else {
+                                return { success: false, message: 'Not enough cash or inventory space!' };
+                            }
+                        }
+                    },
+                    {
+                        text: 'Pass',
+                        action: () => ({ success: true, message: 'You passed on the deal.' })
+                    }
+                ];
+                
+                // Add warning text to the first choice if can't afford
+                if (!canAffordDeal) {
+                    choices[0].text += ' (Not enough cash!)';
+                } else if (!hasSpaceForDeal) {
+                    choices[0].text += ' (No inventory space!)';
+                }
+                
+                return choices;
+                
+            case gameEngine.eventSystem.events.vehicle_deal:
+                if (params.vehicle) {
+                    const originalPrice = VEHICLES[params.vehicle].cost;
+                    const discountedPrice = Math.floor(originalPrice * (1 - params.discountPercentage / 100));
+                    const canAfford = gameEngine.gameState.player.cash >= discountedPrice;
+                    
+                    const choices = [
+                        {
+                            text: `Buy ${params.vehicle} for $${discountedPrice.toLocaleString()}`,
+                            action: () => {
+                                if (canAfford) {
+                                    gameEngine.gameState.player.cash -= discountedPrice;
+                                    gameEngine.gameState.player.vehicle = params.vehicle;
+                                    if (!gameEngine.gameState.player.ownedVehicles.includes(params.vehicle)) {
+                                        gameEngine.gameState.player.ownedVehicles.push(params.vehicle);
+                                    }
+                                    return { success: true, message: `Purchased ${params.vehicle} for $${discountedPrice.toLocaleString()}!` };
+                                } else {
+                                    return { success: false, message: 'Not enough cash!' };
+                                }
+                            }
+                        },
+                        {
+                            text: 'Pass',
+                            action: () => ({ success: true, message: 'You passed on the vehicle deal.' })
+                        }
+                    ];
+                    
+                    if (!canAfford) {
+                        choices[0].text += ' (Not enough cash!)';
+                    }
+                    
+                    return choices;
+                }
+                return null;
+                
+            default:
+                return null;
+        }
+    }
+
+    /**
      * Show travel interface with 6 location options
      * Requirements: 2.1, 2.3, 2.4, 2.7
      */
@@ -5843,9 +6179,9 @@ class UIManager {
         const result = this.gameEngine.travelToLocation(locationName);
         
         if (result.success) {
-            if (result.eventOccurred) {
-                // Show event message with continue button - don't auto-advance
-                this.showTravelEventResult(result.message, result.eventMessage);
+            if (result.eventOccurred && result.event) {
+                // Event interface will be shown by the travel method - don't show duplicate
+                console.log('Event occurred during travel, event interface will be shown automatically');
             } else {
                 // No event - show quick success message and auto-advance
                 this.showTravelResult(result.message, true, false);
@@ -6025,7 +6361,27 @@ class UIManager {
     generateEventActions(event) {
         const params = event.params;
         let actions = '';
-
+        
+        // Store the current event for choice handling
+        this.currentEvent = event;
+        
+        // Get choices for specific events that have them
+        const choices = this.getEventChoices(event);
+        
+        if (choices && choices.length > 0) {
+            actions = choices.map((choice, index) => `
+                <button class="event-action-btn choice-${index}" onclick="game.handleEventChoice(${index})">
+                    ${choice.text}
+                </button>
+            `).join('');
+            
+            // Store the choices for later execution
+            this.currentEventChoices = choices;
+            
+            return actions;
+        }
+        
+        // Fallback to hardcoded actions for events without choices
         switch (event.event) {
             case this.gameEngine.eventSystem.events.loan_shark:
                 actions = `
@@ -6082,7 +6438,7 @@ class UIManager {
                 
             default:
                 actions = `
-                    <button class="event-action-btn continue" onclick="game.handleEventChoice('continue')">
+                    <button class="event-action-btn continue" onclick="game.dismissEvent()">
                         Continue
                     </button>
                 `;
@@ -6564,7 +6920,10 @@ if (!window.game || typeof window.game.showBuyInterface !== 'function') {
             const result = game.makeDebtPayment(amount);
             if (result.success) {
                 game.uiManager.showNotification(result.message, 'success');
-                game.uiManager.showDebtPaymentInterface(); // Refresh interface
+                // Only refresh interface if debt is not paid off (game not ending)
+                if (game.gameState.player.mobDebt > 0) {
+                    game.uiManager.showDebtPaymentInterface();
+                }
             } else {
                 game.uiManager.showNotification(result.message, 'error');
             }
@@ -6577,7 +6936,10 @@ if (!window.game || typeof window.game.showBuyInterface !== 'function') {
                 const result = game.makeDebtPayment(customAmount);
                 if (result.success) {
                     game.uiManager.showNotification(result.message, 'success');
-                    game.uiManager.showDebtPaymentInterface(); // Refresh interface
+                    // Only refresh interface if debt is not paid off (game not ending)
+                    if (game.gameState.player.mobDebt > 0) {
+                        game.uiManager.showDebtPaymentInterface();
+                    }
                 } else {
                     game.uiManager.showNotification(result.message, 'error');
                 }
@@ -6611,11 +6973,23 @@ if (!window.game || typeof window.game.showBuyInterface !== 'function') {
     // Event system methods
     getCurrentEvent: () => game ? game.eventSystem.getCurrentEvent() : null,
     handleEventChoice: (choice) => {
-        if (game) {
-            const result = game.eventSystem.executeCurrentEvent(choice);
-            game.uiManager.showEventResult(result);
-            game.saveGame();
-            return result;
+        if (game && game.uiManager) {
+            // If choice is a number, it's an index into the stored choices
+            if (typeof choice === 'number' && game.uiManager.currentEventChoices) {
+                const selectedChoice = game.uiManager.currentEventChoices[choice];
+                if (selectedChoice && selectedChoice.action) {
+                    const result = selectedChoice.action();
+                    game.uiManager.showEventResult(result);
+                    game.saveGame();
+                    return result;
+                }
+            } else {
+                // Fallback to old system for hardcoded choices
+                const result = game.eventSystem.executeCurrentEvent(choice);
+                game.uiManager.showEventResult(result);
+                game.saveGame();
+                return result;
+            }
         }
         return null;
     },

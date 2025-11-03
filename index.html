@@ -459,7 +459,10 @@
                         const result = gameInstance.makeDebtPayment(amount);
                         if (result.success) {
                             gameInstance.uiManager.showNotification(result.message, 'success');
-                            gameInstance.uiManager.showDebtPaymentInterface(); // Refresh interface
+                            // Only refresh interface if debt is not paid off (game not ending)
+                            if (gameInstance.gameState.player.mobDebt > 0) {
+                                gameInstance.uiManager.showDebtPaymentInterface();
+                            }
                         } else {
                             gameInstance.uiManager.showNotification(result.message, 'error');
                         }
@@ -479,7 +482,10 @@
                             const result = gameInstance.makeDebtPayment(customAmount);
                             if (result.success) {
                                 gameInstance.uiManager.showNotification(result.message, 'success');
-                                gameInstance.uiManager.showDebtPaymentInterface(); // Refresh interface
+                                // Only refresh interface if debt is not paid off (game not ending)
+                                if (gameInstance.gameState.player.mobDebt > 0) {
+                                    gameInstance.uiManager.showDebtPaymentInterface();
+                                }
                             } else {
                                 gameInstance.uiManager.showNotification(result.message, 'error');
                             }
@@ -589,6 +595,77 @@
                     return { market, availableItems };
                 }
                 return null;
+            },
+            dismissEvent: () => {
+                console.log('dismissEvent called');
+                if (gameReady && gameInstance) {
+                    try {
+                        gameInstance.eventSystem.clearCurrentEvent();
+                        gameInstance.uiManager.showMainGame(gameInstance.getGameState());
+                    } catch (error) {
+                        console.error('Error dismissing event:', error);
+                    }
+                } else {
+                    console.warn('Game not ready for dismissEvent');
+                }
+            },
+            handleEventChoice: (choice) => {
+                console.log('handleEventChoice called with:', choice);
+                if (gameReady && gameInstance && gameInstance.uiManager) {
+                    try {
+                        // If choice is a number, it's an index into the stored choices
+                        if (typeof choice === 'number' && gameInstance.uiManager.currentEventChoices) {
+                            const selectedChoice = gameInstance.uiManager.currentEventChoices[choice];
+                            if (selectedChoice && selectedChoice.action) {
+                                const result = selectedChoice.action();
+                                gameInstance.uiManager.showEventResult(result);
+                                gameInstance.saveGame();
+                                return result;
+                            }
+                        } else {
+                            // Fallback to old system for hardcoded choices
+                            const result = gameInstance.eventSystem.executeCurrentEvent(choice);
+                            gameInstance.uiManager.showEventResult(result);
+                            gameInstance.saveGame();
+                            return result;
+                        }
+                    } catch (error) {
+                        console.error('Error handling event choice:', error);
+                    }
+                } else {
+                    console.warn('Game not ready for handleEventChoice');
+                }
+                return null;
+            },
+            returnToMainGame: () => {
+                console.log('returnToMainGame called');
+                if (gameReady && gameInstance && gameInstance.uiManager) {
+                    try {
+                        gameInstance.uiManager.showMainGame(gameInstance.getGameState());
+                    } catch (error) {
+                        console.error('Error returning to main game:', error);
+                    }
+                } else {
+                    console.warn('Game not ready for returnToMainGame');
+                }
+            },
+            restartGame: () => {
+                console.log('restartGame called');
+                if (gameReady && gameInstance) {
+                    try {
+                        // Clear saved game and reset to start screen
+                        gameInstance.saveSystem.clearSave();
+                        gameInstance.gameState = gameInstance.getDefaultGameState();
+                        gameInstance.uiManager.showStartScreen();
+                        console.log('Game restarted successfully');
+                    } catch (error) {
+                        console.error('Error restarting game:', error);
+                        alert('Error restarting game: ' + error.message);
+                    }
+                } else {
+                    console.warn('Game not ready for restart');
+                    alert('Game is still loading, please wait...');
+                }
             }
         };
         
